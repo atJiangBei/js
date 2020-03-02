@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			body{
+				overflow-y: scroll;
+			}
+			#max{
+				height: 3000px;
+			}
+			#root{
+				height: 50px;
+				width: 300px;
+				border:1px solid #f00;
+				left: 0;
+				top: 0;
+				position: static;
+				margin-top: 500px;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- <div id="max">
+			<div id="root"></div>
+		</div>-->
+		<input id="textbox"/> 
+	</body>
+</html>
+<script>
+	/* const root = document.getElementById("root");
+	function fixedDiv(){
+		console.log(1)
+		root.style.position = 'fixed';
+		root.style.marginTop = '0';
+	}
+	function staticDiv(){
+		console.log(1)
+		root.style.position = 'static';
+		root.style.marginTop = '500px';
+	} 
+	function throttle(method,context){
+		clearTimeout(method.tId)
+		method.tId = setTimeout(function(){
+			method.call(context)
+		},100)
+	}
+	window.onscroll = function(){
+		if(this.scrollY>500){
+			fixedDiv()
+		}else{
+			staticDiv()
+		}
+	} 
+	function throttle(func) {
+		let previous = 0;
+		return function(s) {
+			let now = Date.now(),
+				args = arguments;
+			if (now - previous > s) {
+				func.apply(null, args);
+				previous = now;
+			}
+		}
+	} 
+	function throttle(func) {
+    let timer;
+    return function(s) {
+        let args = arguments;
+        if (!timer) {
+            timer = setTimeout(() => {
+                timer = null;
+                func.apply(timer, args)
+            }, s)
+        }
+
+    }
+} 
+	const fixedthrottle = throttle(fixedDiv);
+	const staticthrottle = throttle(staticDiv)
+	window.onscroll = function(){
+		const Y = this.scrollY;
+		if(Y>500){
+			fixedthrottle(100)
+		}else{
+			staticthrottle(100)
+		}
+	}
+	 */
+	
+</script>
+<script>
+	const textbox = document.getElementById("textbox");
+	function query(){
+		console.log(textbox.value);//此处模拟发送请求
+	}
+	/* function debonce(method,context){
+		clearTimeout(method.tId)
+		method.tId = setTimeout(function(){
+			method.call(context)
+		},300)
+	} */
+ function debounce(func, wait) {
+    let timeout;
+    return function () {
+        let args = arguments;
+        if (timeout) clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(null, args)
+        }, wait);
+    }
+} 
+	textbox.oninput = function(){
+		debonce(query)
+	}
+textbox.oninput = debounce(query,300)
+</script>

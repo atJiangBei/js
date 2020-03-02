@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const data = {
+		"data": {
+			"trace": {
+				"spans": [{
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "13.65.15783855333910000",
+					"spanId": 0,
+					"parentSpanId": -1,
+					"refs": [],
+					"serviceCode": "user-service",
+					"startTime": 1578385533391,
+					"endTime": 1578385534815,
+					"endpointName": "com.gormen.controller.UserController.info(int)",
+					"type": "Entry",
+					"peer": "",
+					"component": "SpringMVC",
+					"isError": false,
+					"layer": "Http",
+					"tags": [{
+						"key": "url",
+						"value": "http://127.0.0.1:9998/userweb/users/2"
+					}, {
+						"key": "http.method",
+						"value": "GET"
+					}],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "13.65.15783855333910000",
+					"spanId": 1,
+					"parentSpanId": 0,
+					"refs": [],
+					"serviceCode": "user-service",
+					"startTime": 1578385533416,
+					"endTime": 1578385534805,
+					"endpointName": "com.gormen.service.impl.UserServiceImpl.info",
+					"type": "Local",
+					"peer": "",
+					"component": "",
+					"isError": false,
+					"layer": "Unknown",
+					"tags": [],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "13.102.15783855339470000",
+					"spanId": 0,
+					"parentSpanId": -1,
+					"refs": [{
+						"traceId": "13.65.15783855333910001",
+						"parentSegmentId": "13.65.15783855333910000",
+						"parentSpanId": 1,
+						"type": "CROSS_THREAD"
+					}],
+					"serviceCode": "user-service",
+					"startTime": 1578385533947,
+					"endTime": 1578385534802,
+					"endpointName": "Hystrix/findById/Execution",
+					"type": "Local",
+					"peer": "",
+					"component": "Hystrix",
+					"isError": false,
+					"layer": "Unknown",
+					"tags": [],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "13.102.15783855339470000",
+					"spanId": 1,
+					"parentSpanId": 0,
+					"refs": [],
+					"serviceCode": "user-service",
+					"startTime": 1578385533948,
+					"endTime": 1578385534802,
+					"endpointName": "com.gormen.service.impl.RoleRestService.findById",
+					"type": "Local",
+					"peer": "",
+					"component": "",
+					"isError": false,
+					"layer": "Unknown",
+					"tags": [],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "13.105.15783855339580000",
+					"spanId": 0,
+					"parentSpanId": -1,
+					"refs": [{
+						"traceId": "13.65.15783855333910001",
+						"parentSegmentId": "13.102.15783855339470000",
+						"parentSpanId": 1,
+						"type": "CROSS_THREAD"
+					}],
+					"serviceCode": "user-service",
+					"startTime": 1578385533958,
+					"endTime": 1578385534796,
+					"endpointName": "Hystrix/RoleClient#findById(Integer)/Execution",
+					"type": "Local",
+					"peer": "",
+					"component": "Hystrix",
+					"isError": false,
+					"layer": "Unknown",
+					"tags": [],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "13.105.15783855339580000",
+					"spanId": 1,
+					"parentSpanId": 0,
+					"refs": [],
+					"serviceCode": "user-service",
+					"startTime": 1578385534481,
+					"endTime": 1578385534602,
+					"endpointName": "/menuroleweb/rolerestapi/5",
+					"type": "Exit",
+					"peer": "172.20.10.9:9999",
+					"component": "Feign",
+					"isError": false,
+					"layer": "Http",
+					"tags": [{
+						"key": "http.method",
+						"value": "GET"
+					}, {
+						"key": "url",
+						"value": "http://172.20.10.9:9999/menuroleweb/rolerestapi/5"
+					}],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "12.63.15783855345000000",
+					"spanId": 0,
+					"parentSpanId": -1,
+					"refs": [{
+						"traceId": "13.65.15783855333910001",
+						"parentSegmentId": "13.105.15783855339580000",
+						"parentSpanId": 1,
+						"type": "CROSS_PROCESS"
+					}],
+					"serviceCode": "rolemenu-service",
+					"startTime": 1578385534500,
+					"endTime": 1578385534599,
+					"endpointName": "/rolerestapi/{id}",
+					"type": "Entry",
+					"peer": "",
+					"component": "SpringMVC",
+					"isError": false,
+					"layer": "Http",
+					"tags": [{
+						"key": "url",
+						"value": "http://172.20.10.9:9999/menuroleweb/rolerestapi/5"
+					}, {
+						"key": "http.method",
+						"value": "GET"
+					}],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "12.63.15783855345000000",
+					"spanId": 1,
+					"parentSpanId": 0,
+					"refs": [],
+					"serviceCode": "rolemenu-service",
+					"startTime": 1578385534507,
+					"endTime": 1578385534508,
+					"endpointName": "Mysql/JDBI/PreparedStatement/execute",
+					"type": "Exit",
+					"peer": "localhost:3306",
+					"component": "mysql-connector-java",
+					"isError": false,
+					"layer": "Database",
+					"tags": [{
+						"key": "db.type",
+						"value": "sql"
+					}, {
+						"key": "db.instance",
+						"value": "schooledb"
+					}, {
+						"key": "db.statement",
+						"value": "SELECT id AS id,`name`,description,`level`,created_at AS createdAt,updated_at AS updatedAt FROM role WHERE id=?"
+					}],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "13.65.15783855333910000",
+					"spanId": 2,
+					"parentSpanId": 1,
+					"refs": [],
+					"serviceCode": "user-service",
+					"startTime": 1578385533419,
+					"endTime": 1578385533420,
+					"endpointName": "Mysql/JDBI/PreparedStatement/execute",
+					"type": "Exit",
+					"peer": "localhost:3306",
+					"component": "mysql-connector-java",
+					"isError": false,
+					"layer": "Database",
+					"tags": [{
+						"key": "db.type",
+						"value": "sql"
+					}, {
+						"key": "db.instance",
+						"value": "schooledb"
+					}, {
+						"key": "db.statement",
+						"value": "SELECT id AS id,`type`,`name`,sex,brief_description AS briefDescription,spNo,`status`,created_at AS createdAt,updated_at AS updatedAt FROM user WHERE id=?"
+					}],
+					"logs": []
+				}, {
+					"traceId": "13.65.15783855333910001",
+					"segmentId": "13.65.15783855333910000",
+					"spanId": 3,
+					"parentSpanId": 1,
+					"refs": [],
+					"serviceCode": "user-service",
+					"startTime": 1578385533442,
+					"endTime": 1578385533443,
+					"endpointName": "Mysql/JDBI/PreparedStatement/execute",
+					"type": "Exit",
+					"peer": "localhost:3306",
+					"component": "mysql-connector-java",
+					"isError": false,
+					"layer": "Database",
+					"tags": [{
+						"key": "db.type",
+						"value": "sql"
+					}, {
+						"key": "db.instance",
+						"value": "schooledb"
+					}, {
+						"key": "db.statement",
+						"value": "SELECT  id AS id,user_id AS userId,role_id AS roleId,created_at AS createdAt,updated_at AS updatedAt  FROM user_role \n WHERE  (user_id = ?)"
+					}],
+					"logs": []
+				}]
+			}
+		}
+	}
+
+const da = data.data.trace.spans
+const root = da.splice(0,1)
+let length = da.length;
+const [newData] = root
+for (let i=0;i<length;i++) {
+	if(da[i].parentSpanId === newData.spanId){
+		if(!newData.children){
+			newData.children = []
+		}
+		newData.children.push(da[i])
+		da.splice(i,1)
+		i--
+		length--
+	}
+}
+
+const rootChildren = newData.children
+
+
+console.log(da)
+console.log(rootChildren)
+
+
+
+	// const newData = [{
+	// 	id: 3,
+	// 	date: "全院",
+	// 	children: [{
+	// 			id: 31,
+	// 			date: "全院",
+	// 			name: "第二根半价套餐",
+	// 			alias: "是兄弟就来割",
+	// 			operator: "铁手无情",
+	// 			state: "无痛",
+	// 			children: [{
+	// 				id: 311,
+	// 				date: "全院",
+	// 				name: "第二根半价套餐",
+	// 				alias: "是兄弟就来割",
+	// 				operator: "铁手无情",
+	// 				state: "无痛",
+	// 				children: [{
+	// 					id: 3111,
+	// 					date: "全院",
+	// 					name: "第二根半价套餐",
+	// 					alias: "是兄弟就来割",
+	// 					operator: "铁手无情",
+	// 					state: "无痛",
+	// 				}]
+	// 			}]
+	// 		},
+	// 		{
+	// 			id: 41,
+	// 			name: "第二根半价套餐",
+	// 			alias: "是兄弟就来割",
+	// 			operator: "铁手无情",
+	// 			state: "无痛"
+	// 		},
+	// 		{
+	// 			id: 51,
+	// 			name: "第二根半价套餐",
+	// 			alias: "是兄弟就来割",
+	// 			operator: "铁手无情",
+	// 			state: "无痛"
+	// 		},
+	// 		{
+	// 			id: 61,
+	// 			name: "第二根半价套餐",
+	// 			alias: "是兄弟就来割",
+	// 			operator: "铁手无情",
+	// 			state: "无痛",
+	// 			children: [{
+	// 				id: 6111,
+	// 				date: "全院",
+	// 				name: "第二根半价套餐",
+	// 				alias: "是兄弟就来割",
+	// 				operator: "铁手无情",
+	// 				state: "无痛",
+	// 				children: [{
+	// 					id: 7111,
+	// 					date: "全院",
+	// 					name: "第二根半价套餐",
+	// 					alias: "是兄弟就来割",
+	// 					operator: "铁手无情",
+	// 					state: "无痛",
+	// 				}]
+	// 			}]
+	// 		}
+	// 	]
+	// }]
+	
+	// console.log(data)
+	// console.log(newData)
+</script>

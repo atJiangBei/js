@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+<div id="test" style="position: relative;" onclick="clickMe()">
+	<div id="hehe"></div>
+	sdsfsd
+</div>
+<script type="text/javascript">
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+    var element = document.querySelector('#test');
+    var observer = new MutationObserver(function(mutations) {
+      console.log(mutations)
+    });
+
+    observer.observe(element, {
+      childList: true,
+	  subtree: true,
+    });
+    
+    function clickMe(){
+      const li = document.createElement("li");
+	  document.querySelector('#hehe').appendChild(li)
+    }
+</script>
+</body>
+</html>

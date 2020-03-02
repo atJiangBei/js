@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+const PENDING = Symbol('pending')
+const FULFILLED = Symbol('fulfilled')
+const REJECTED = Symbol('rejected')
+
+// Promise 形式的异步方法定义
+var promiseAsyncFunc = function() {
+  var status = PENDING
+  var fulfillCallback
+  var rejectCallback
+
+  return {
+    fulfill: function(value) {
+      if (status !== PENDING) return
+      if (typeof fulfillCallback === 'function') {
+        fulfillCallback(value)
+        status = FULFILLED
+      }
+    },
+    reject(error) {
+      if (status !== PENDING) return
+      if (typeof rejectCallback === 'function') {
+        rejectCallback(error)
+        status = REJECTED
+      }
+    },
+    promise: {
+      then: function(_fulfillCallback, _rejectCallback) {
+        fulfillCallback = _fulfillCallback
+        rejectCallback = _rejectCallback
+      }
+    }
+  }
+}
+
+let ownPromise = function(asyncCall) {
+  let defer = promiseAsyncFunc()
+  asyncCall(defer.fulfill, defer.reject)
+  return defer.promise
+}
+
+// Promise 形式的异步方法调用
+ownPromise(function(fulfill, reject) {
+  setTimeout(() => {
+    var randomNumber = Math.random()
+    if (randomNumber > 0.5) fulfill(randomNumber)
+    else reject(randomNumber)
+  }, 1000)
+}).then(data => console.log(data), err => console.log(err))
+</script>

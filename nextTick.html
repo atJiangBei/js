@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const callBacks = [];
+
+	function flushCallbacks() {
+		const copies = callBacks.slice(0)
+		callBacks.length = 0
+		for (let i = 0; i < copies.length; i++) {
+			copies[i]()
+		}
+	}
+
+	function nextTick(cb) {
+		let _resolve;
+
+		callBacks.push(() => {
+			console.log('进push')
+			if (cb) {
+				cb()
+			} else if (_resolve) {
+				console.log("cb")
+				_resolve()
+			}
+		})
+		if (!cb) {
+			return new Promise(resolve => {
+				console.log("res")
+				_resolve = resolve
+			})
+		}
+	}
+	nextTick().then(()=>{
+		console.log(111)
+	})
+	
+	flushCallbacks()
+</script>

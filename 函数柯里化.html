@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	
+	console.log(Math.max.bind()(1,2))
+	var a = "123";
+	var b = {
+		a:"456",
+		alert(){
+			console.log(this.a)
+		}
+	}
+	b.alert.bind(this)()
+	
+	function bind(fn,context){
+		return function(){
+			return fn.apply(context,arguments)
+		}
+	}
+	
+	console.log(bind(Math.max)(1,2))
+	
+	bind(b.alert,this)()
+</script>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+function Observer (data) {
+  //let dep = new Dep()
+  return new Proxy(data, {
+    get (a,b,c) {
+      return Reflect.get(data, b)
+    },
+    set (data, key, newVal) {
+      if (Reflect.get(data, key) === newVal) {
+        return
+      }
+	  console.log(data, key, newVal)
+        Reflect.set(data, key, observer(newVal))
+        
+    }
+  })
+}
+
+function observer (data) {
+	const flag = Object.prototype.toString.call(data) !== '[object Object]' 
+	&& Object.prototype.toString.call(data) !== '[object Array]' 
+  if (flag) {
+    return data
+  }
+  Object.keys(data).forEach(key => {
+    data[key] = observer(data[key])
+  })
+  return Observer(data)
+}
+const person = {
+	name:'小明',
+	children:["1明","2明"]
+}
+
+const per = observer(person)
+per.children[1] = "明"
+console.log(per.children)
+</script>
