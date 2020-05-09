@@ -9,7 +9,18 @@
 </html>
 <script>
 	const callBacks = [];
-
+	let pending = false;
+	let timerFunc;
+	if(typeof Promise !== 'undefined'){
+		const p = Promise.resolve()
+		timerFunc = ()=>{
+			p.then(flushCallbacks)
+		}
+	}else{
+		timerFunc = ()=>{
+			setTimeout(flushCallbacks,0)
+		}
+	}
 	function flushCallbacks() {
 		const copies = callBacks.slice(0)
 		callBacks.length = 0
@@ -20,26 +31,27 @@
 
 	function nextTick(cb) {
 		let _resolve;
-
 		callBacks.push(() => {
-			console.log('进push')
 			if (cb) {
-				cb()
+				cb("常规")
 			} else if (_resolve) {
-				console.log("cb")
-				_resolve()
+				_resolve("promise")
 			}
 		})
+		if (!pending) {
+			pending = true
+			timerFunc()
+		}
 		if (!cb) {
 			return new Promise(resolve => {
-				console.log("res")
 				_resolve = resolve
 			})
 		}
 	}
-	nextTick().then(()=>{
-		console.log(111)
+	nextTick(function(res) {
+		console.log(res,1)
 	})
-	
-	flushCallbacks()
+	nextTick().then(res=>{
+		console.log(res,12)
+	})
 </script>

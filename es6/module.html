@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script type="module">
+	import person from './index.js'
+	const isNotModuleScript = this !== undefined;
+	console.log(isNotModuleScript)
+</script>
+<script>
+	let generator = function* () {
+	  yield 1;
+	  yield* [2,3,4];
+	  yield 5;
+	};
+	var iterator = generator();
+	console.log(iterator.next())
+	console.log(iterator.next())
+	console.log(iterator.next())
+	console.log(iterator.next())
+	console.log(iterator.next())
+
+</script>

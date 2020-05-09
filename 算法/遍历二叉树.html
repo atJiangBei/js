@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const root = {
+		val: "A",
+		left: {
+			val: "B",
+			left: {
+				val: "D"
+			},
+			right: {
+				val: "E"
+			}
+		},
+		right: {
+			val: "C",
+			right: {
+				val: "F"
+			}
+		}
+	};
+	function preorder(root) {
+	    // 递归边界，root 为空
+	    if(!root) {
+	        return 
+	    }
+	     
+	    // 输出当前遍历的结点值
+	    
+	    // 递归遍历左子树 
+	    preorder(root.left)  
+	    // 递归遍历右子树  
+		
+	    preorder(root.right)
+		console.log('当前遍历的结点值是：', root.val)  
+	}
+	//preorder(root)
+	
+	const domRoot = {
+		label:"动物类",
+		children:[
+			{
+				label:"狗",
+				children:[
+					{
+						label:"哈士奇"
+					},
+					{
+						label:"金毛"
+					},
+					{
+						label:"拉布拉多"
+					}
+				]
+			},
+			{
+				label:"猫",
+				children:[
+					{
+						label:"橘猫"
+					},
+					{
+						label:"蓝猫"
+					}
+				]
+			},
+			{
+				label:"老虎",
+				children:[
+					{
+						label:"东北虎"
+					},
+					{
+						label:"美洲虎"
+					}
+				]
+			}
+		]
+	}
+	
+	let index=0;
+	
+	function fn(arr){
+		if(!arr)return;
+		console.log(arr)
+		for (let i=0; i<arr.length;i++) {
+			
+				fn(arr[i].children)
+				arr[i].index = index++
+		}
+	}
+	fn(domRoot.children)
+	console.log(domRoot)
+</script>

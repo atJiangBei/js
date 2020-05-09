@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	function isPalindrome(str) {
+	    // 缓存字符串的长度
+	    const len = str.length
+	    // 遍历前半部分，判断和后半部分是否对称
+	    for(let i=0;i<len/2;i++) {
+			console.log(i,len-i-1)
+	        if(str[i]!==str[len-i-1]) {
+	            return false
+	        }
+	    }
+	    return true
+	}
+	var str = "abcdedcba";
+	console.log(isPalindrome(str))
+</script>

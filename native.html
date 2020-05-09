@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>第一</title>
+		<meta content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" name="viewport" />
+		<script src="https://cdn.bootcss.com/vConsole/3.3.4/vconsole.min.js"></script>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	new VConsole()
+	window.NativeH5Cb = {
+	  id: 0,
+	  cb: {}
+	};
+	const UA = window.navigator.userAgent;
+	const isIOS = /iphone|ipad|ipod/.test(UA.toLowerCase());
+	const isAN = UA.indexOf('Android') >= 0;
+	class Bridge {
+	  call(action, args, success) {
+	    var uid = window.NativeH5Cb.id++;
+	    let callBack = 'callBack' + uid;
+	
+	    args = {
+	      action: action,
+	      params: args,
+	      callBack
+	    };
+	
+	    window.NativeH5Cb.cb[callBack] = success;
+	    if (isAN) {
+	      window.xyWeather.callApp(JSON.stringify(args));
+	    } else if (isIOS) {
+	      window.webkit.messageHandlers.callApp.postMessage(JSON.stringify(args));
+	    }
+	  }
+	}
+	
+	var selfBridge = new Bridge();
+	function getUserInfo() {
+	  new Promise(res => {
+	    selfBridge.call('userInfo', { service: 'App.Welfare.Log' }, data => {
+	      console.log(data)
+	    });
+	  });
+	}
+</script>

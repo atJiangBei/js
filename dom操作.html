@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			<div></div>
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+		<input type="file" id="add"/>
+	</body>
+</html>
+<script>
+	var app = document.getElementById("app");
+	var fragment = document.createDocumentFragment();
+	let firstChild = app.firstChild;
+	while(firstChild){
+		console.log(firstChild)
+		fragment.insertBefore(firstChild,null)
+		firstChild = app.firstChild
+	}
+	console.log(fragment)
+</script>
+<script>
+	const add = document.getElementById("add")
+	const fr = new FileReader()
+	
+	add.onchange = function(event){
+		const file = this.files[0]
+		
+		var reader = new FileReader();
+		       reader.onload = function(e){
+		          console.log(e.target.result)
+		
+		        }
+		        reader.readAsDataURL(file);
+	}
+</script>

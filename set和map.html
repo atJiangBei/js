@@ -8,22 +8,162 @@
 	</body>
 </html>
 <script>
-	
+	//Set
+	/* 
+	属性
+	 size
+	方法
+	has: ƒ has()
+	add: ƒ add()
+	delete: ƒ delete()
+	clear: ƒ clear()
+	entries: ƒ entries() 返回键值对遍历器对象
+	forEach: ƒ forEach()
+	values: ƒ values()返回值遍历器对象
+	keys: ƒ values()返回key值遍历器对象
+	 */
+
+	//去重
+
+	var s1 = new Set([1, 2, 3, 4, 1, 2, 3])
+	//[...s1];//[1,2,3,4]
+	var s2 = [...new Set('ababbc')].join('')
+	//s2  //abc
+	var s3 = new Set()
+	s3.add(NaN)
+	s3.add(NaN)
+	//s3.size  长度1 ，证明在set里，NaN和NaN是相同的
+
+	//转化为数组
+
+	var s4 = new Set()
+	s4.add(1).add(2).add(3).add(4)
+
+	//Array.from(s4);//[1,2,3,4]
+
+	var s5 = new Set([1, 2, 3, 4, 5])
+
+
+	for (let s of s5.keys()) {
+		//console.log('values--->',s)
+	}
+	for (let s of s5.values()) {
+		//console.log('values--->',s)
+	}
+	for (let s of s5.entries()) {
+		//console.log('values--->',s)
+	}
+	s5.forEach((value, key) => {
+		//console.log(key + ' : ' + value)
+	})
+</script>
+<script>
+	//WeakSet
+	/* 
+	1,与Set的区别
+	 （1）WeakSet成员只能是对象，而不能是其他的值
+	 （2）WeakSet中的对象都是弱引用，即垃圾回收机制不考虑WeakSet对该对象的引用，
+		也就是说，如果其他对像都不再引用该对象，那么垃圾回收机制会自动回收该对象所占用的内存，不考虑此对象是否存在于WeakSet中
+	说明：由于WeakSet成员随时都有可能消失，并不稳定，所以es6 规定WeakSet不可遍历
+	*/
+	const ws1 = new WeakSet()
+	const ws1obj = {
+		name: "小米"
+	}
+	ws1.add(ws1obj)
+	ws1.has(ws1obj) //true
 </script>
 <script>
 	//map
+	/* 
+	size: (...)
+	constructor: ƒ Map()
+	get: ƒ ()
+	set: ƒ ()
+	has: ƒ has()
+	delete: ƒ delete()
+	clear: ƒ clear()
+	entries: ƒ entries()
+	forEach: ƒ forEach()
+	keys: ƒ keys()
+	values: ƒ values()
+	可以用对象作为key值 
+	Map 的键实际上是跟内存地址绑定的，只要内存地址不一样，就视为两个键
+	*/
+	const m = new Map()
+	const mk = {
+		name: "小明"
+	}
+	const mv = {
+		name: "小红"
+	}
+	m.set(mk, mv)
+	m.set(true, mv)
+	m.set(false, mv)
+	m.set(false, 2)
+	m.set(NaN, 3)
+	m.set(NaN, 4)
+	m.size //4
 
-const m = new Map()
-const o = {name:"小明"}
+	/*
+	//[...m]
+	0: (2) [{…}, {…}]
+	1: (2) [true, {…}]
+	2: (2) [false, 2]
+	3: (2) [NaN, 4]
+	*/
+	for (let s of m.keys()) {
+		console.log(s)
+	}
+	for (let s of m.values()) {
+		console.log(s)
+	}
+	const map = new Map([
+		['F', 'no'],
+		['T', 'yes'],
+	]);
 
-m.set(o,{name:"小红"})
-console.log(m.keys())
-for (let s of m.keys()) {
-	console.log(s)
-}
+	for (let key of map.keys()) {
+		console.log(key);
+	}
+	// "F"
+	// "T"
 
-console.log(m.size)
-console.log(m.values())
-console.log([...m.entries()])
+	for (let value of map.values()) {
+		console.log(value);
+	}
+	// "no"
+	// "yes"
 
+	for (let item of map.entries()) {
+		console.log(item[0], item[1]);
+	}
+	// "F" "no"
+	// "T" "yes"
+
+	// 或者
+	for (let [key, value] of map.entries()) {
+		console.log(key, value);
+	}
+	// "F" "no"
+	// "T" "yes"
+
+	// 等同于使用map.entries()
+	for (let [key, value] of map) {
+		console.log(key, value);
+	}
+	// "F" "no"
+	// "T" "yes"
+</script>
+<script>
+	//WeakMap
+	/* 
+	与Map的区别
+	（1）无法遍历
+	delete: ƒ delete()
+	get: ƒ ()
+	set: ƒ ()
+	has: ƒ has()
+	 */
+	
 </script>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<template id="my-paragraph">
+		  <style>
+		    p {
+		      color: white;
+		      background-color: #666;
+		      padding: 5px;
+		    }
+		  </style>
+		  <p>Paragraph content. </p>
+		</template>
+		<my-paragraph></my-paragraph>
+		<script>
+			var header = document.createElement('header');
+			var shadowRoot = header.attachShadow({mode: 'open'});
+			var paragraphElement = document.createElement('p');
+			
+			paragraphElement.innerText = 'Shadow DOM';
+			shadowRoot.appendChild(paragraphElement);
+			document.body.appendChild(header)
+		</script>
+		<user-card></user-card>
+	</body>
+</html>
