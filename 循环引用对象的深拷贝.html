@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	// const a = {
+	// 	name:"a"
+	// }
+	// const  b = a;
+	// a.b = b;
+	// console.log(a)
+	
+	// const  copy = (obj)=>{
+	// 	const newObj = {}; 
+	// 	const m = new Map();
+	// 	const root = Symbol("root");
+	// 	m.set(root,obj);
+	// 	for(let k in obj){
+	// 		if(typeof obj[k] !== 'object'){
+	// 			newObj[k] = obj[k]
+	// 		}else{
+	// 			if(m.get(newObj[k])){
+	// 				newObj[k] = newObj[k]
+	// 			}else{
+					
+	// 			}
+	// 		}
+	// 	}
+	// }
+	
+	// console.log(copy(a))
+	function deepCopy3(obj) {
+	    // hash表，记录所有的对象的引用关系
+	    let map = new WeakMap();
+	    function dp(obj) {
+	        let result = null;
+	        let keys = Object.keys(obj);
+	        let key = null,
+	            temp = null,
+	            existobj = null;
+	
+	        existobj = map.get(obj);
+	        //如果这个对象已经被记录则直接返回
+	        if(existobj) {
+	            return existobj;
+	        }
+	
+	        result = {}
+	        map.set(obj, result);
+	
+	        for(let i =0,len=keys.length;i<len;i++) {
+	            key = keys[i];
+	            temp = obj[key];
+	            if(temp && typeof temp === 'object') {
+	                result[key] = dp(temp);
+	            }else {
+	                result[key] = temp;
+	            }
+	        }
+	        return result;
+	    }
+	    return dp(obj);
+	}
+	
+	const obj= {
+	    a: {
+	        name: 'a'
+	    },
+	    b: {
+	        name: 'b'
+	    },
+	    c: {
+	
+	    }
+	};
+	c.d.e = obj.a;
+	
+	const copy = deepCopy3(obj);
+	
+</script>

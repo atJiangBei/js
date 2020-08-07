@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	var a1={};var a2={};var a3={};
+	var a4={};var a5={};var a6={};
+	var a7={};var a8={};var a9={};
+	a1.右=a2;a2.右=a3;
+	a4.右=a5;a5.右=a6;
+	a7.右=a8;a8.右=a9;
+	
+	a2.左=a1;a3.左=a2;
+	a5.左=a4;a6.左=a5;
+	a8.左=a7;a9.左=a8;
+	
+	a4.上=a1;a7.上=a4;
+	a5.上=a2;a8.上=a5;
+	a6.上=a3;a9.上=a6;
+	
+	a1.下=a4;a4.下=a7;
+	a2.下=a5;a5.下=a8;
+	a3.下=a6;a6.下=a9;
+	
+	a1.key=1;a2.key=2;a3.key=3;
+	a4.key=4;a5.key=5;a6.key=6;
+	a7.key=7;a8.key=8;a9.key=9;
+	
+	var arr=[a1,a2,a3,a4,a5,a6,a7,a8,a9]
+	
+	var way=['上','右','下','左']
+	
+	function getPath(){
+	    let index=1+Math.random()*9|0;
+	    const path=[index];
+	    while(1){
+	        const curWays=way.slice();
+	        let isFind=false;
+	        while(curWays.length>0){
+	            const wayIndex=(Math.random()*curWays.length)|0;
+	
+	            const next=arr[index-1][curWays[wayIndex]];
+	            curWays.splice(wayIndex,1);
+	            if(next!==void 0){
+	                if(path.indexOf(next.key)===-1){
+	                    path.push(next.key);
+	                    index=next.key;
+	                    isFind=true;
+	                    break;
+	                }else if(next.key===path[0]){
+	                    isFind=true;
+						path.push(next.key);
+	                    break;
+	                }
+	            }
+	
+	        }
+	        if(!isFind){break;}
+	        else if(path.length>1&&path[0]===path[path.length-1]){
+	            if(path.length>=4){return path;}
+	            else{return getPath();}
+	        }
+	    }
+	    if(path[0]===path[path.length-1]){
+	        return path;
+	    }else{
+	        return getPath();
+	    }
+	}
+	console.log(getPath())
+</script>

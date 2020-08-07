@@ -8,88 +8,60 @@
 	</body>
 </html>
 <script>
-	//例子1
-	let i = 0;
-	const callback = ()=>{
-		i++
-		if(i>10)return;
-		callback()
+	
+	const createAsync = (times)=>{
+		return ()=>{
+			return new Promise((res,rej)=>{
+				if(times === 2){
+					setTimeout(rej,times*1000,times)
+				}else{
+					setTimeout(res,times*1000,times)
+				}
+				
+			})
+		}
 	}
-	callback()
-	//console.log(i)
-	//例子2
-	// let i2 = 0;
-	// const callback2 = ()=>{
-	// 	const length = 10;
-	// 	const max = 3;
-	// 	let i = 0;
-	// 	const ret = [];
-	// 	const queue = [];
-	// 	const en = ()=>{
-	// 		if(i === length){
-	// 			return Promise.resolve('333333333')
-	// 		}
-	// 		const p = new Promise(res=>setTimeout(res,i++*1000,i))
-	// 		console.log(i)
-	// 		ret.push(p)
-	// 		queue.push(p)
-	// 		p.then((res)=>{
-	// 			//console.log(res)
-	// 			queue.splice(queue.indexOf(p),1)
-	// 		})
-	// 		let r = Promise.resolve()
-	// 		if(queue.length >= max){
-	// 			console.log("---",queue.length , max)
-	// 			r = Promise.race(queue)
-	// 		}
-	// 		return r.then(()=>en())
-	// 	}
-	// 	return en().then((e)=>{
-	// 		console.log("嘻嘻",ret,e)
-	// 		return Promise.all(ret)
-	// 	})
-	// }
-	// callback2().then(()=>{
-	// 	console.log("呵呵")
-	// })
-	// new Promise(res=>{
-	// 	res(1)
-	// 	new Promise(res=>{
-	// 		res(2)
-	// 	}).then(console.log)
-	// }).then(console.log)
-	
-	
-	const callback3 = ()=>{
+	const packing = async (asypro)=>{
+		let i=0;
+		const fn = async ()=>{
+			if(i>=3){
+				return Promise.resolve("ss")
+			}
+			try{
+				let data = await asypro()
+				return Promise.resolve(data)
+			}catch(e){
+				i++
+				return fn()
+			}
+		}
+		return fn()
+	}
+	function asyncLimit(max,array){
 		let i = 0;
-		let p1 = null
-		const en = ()=>{
-			i++
-			if(i >= 5){
+		const all = [];
+		const queue = [];
+		const recursion = ()=>{
+			if(i === array.length){
 				return Promise.resolve()
 			}
-			if(i%2 === 0){
-				return new Promise(res=>setTimeout(res,1000)).then(res=>{
-					console.log(2)
-					return en()
-				})
-			}else{
-				p1 = new Promise(res=>setTimeout(res,1000)).then(res=>{
-					console.log(22)
-					return en()
-				})
-				return p1
+			const item = array[i++];
+			const p = packing(item);
+			all.push(p)
+			const e = p.then((result)=>{
+				console.log(result)
+				queue.splice(queue.indexOf(e),1)
+			})
+			queue.push(e)
+			if(queue.length === max){
+				return Promise.race(queue).then(recursion)
 			}
-			
+			return Promise.resolve().then(recursion)
 		}
-		const p2 = en()
-		p2.then(()=>{
-			console.log(222222222222)
-		})
-		return (p2 === p1)
+		return recursion().then(()=>Promise.all(all))
 	}
-	// callback3().then(()=>{
-	// 	console.log(3)
-	// })
-	console.log(callback3())
+	asyncLimit(2,[createAsync(4),createAsync(2),createAsync(1),createAsync(3)]).then(res=>{
+		console.log(res)
+	})
+	
 </script>

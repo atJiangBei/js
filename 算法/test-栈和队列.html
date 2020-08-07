@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const arr = [2,7,11,15];
+	const target = 9;
+	const getArr = (arr,target)=>{
+		const map = {};
+		for(let i=0;i<arr.length;i++){
+			if(map[target-arr[i]] !== undefined){
+				return [map[target-arr[i]],i]
+			}
+			map[arr[i]] = i
+		}
+	}
+	console.log(getArr(arr,target))
+</script>
+<script>
+	const threeSum = function(nums) {
+	    // 用于存放结果数组
+	    let res = [] 
+	    // 目标值为0
+	    let sum = 0
+	    // 给 nums 排序
+	    nums = nums.sort((a,b)=>{
+	        return a-b
+	    })
+	    // 缓存数组长度
+	    const len = nums.length
+	    // 注意我们遍历到倒数第三个数就足够了，因为左右指针会遍历后面两个数
+	    for(let i=0;i<len-2;i++) {
+	        // 左指针 j
+	        let j=i+1 
+	        // 右指针k
+	        let k=len-1   
+	        // 如果遇到重复的数字，则跳过
+	        if(i>0&&nums[i]===nums[i-1]) {
+	            continue
+	        }
+	        while(j<k) {
+	            // 三数之和小于0，左指针前进
+	            if(nums[i]+nums[j]+nums[k]<0){
+	                j++
+	               // 处理左指针元素重复的情况
+	               while(j<k&&nums[j]===nums[j-1]) {
+	                    j++
+	                }
+	            } else if(nums[i]+nums[j]+nums[k]>0){
+	                // 三数之和大于0，右指针后退
+	                k--
+	               // 处理右指针元素重复的情况
+	               while(j<k&&nums[k]===nums[k+1]) {
+	                    k--
+	                }
+	            } else {
+	                // 得到目标数字组合，推入结果数组
+	                res.push([nums[i],nums[j],nums[k]])
+	                
+	                // 左右指针一起前进
+	                j++  
+	                k--
+	                // 若左指针元素重复，跳过
+	                while(j<k&&nums[j]===nums[j-1]) {
+	                    j++
+	                }  
+	               // 若右指针元素重复，跳过
+	               while(j<k&&nums[k]===nums[k+1]) {
+	                    k--
+	                }
+	            }
+	        }
+	    }
+	    // 返回结果数组
+	    return res
+	};
+	const arr2 = [1,-1,0,-2,2,4,-2];
+	console.log(threeSum(arr2))
+</script>

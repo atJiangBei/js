@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+/*
+相同的树
+给定两个二叉树，编写一个函数来检验它们是否相同。
+
+如果两个树在结构上相同，并且节点具有相同的值，则认为它们是相同的。
+
+示例 1:
+
+输入:       1         1
+          / \       / \
+         2   3     2   3
+
+        [1,2,3],   [1,2,3]
+
+输出: true
+示例 2:
+
+输入:      1          1
+          /           \
+         2             2
+
+        [1,2],     [1,null,2]
+
+输出: false
+示例 3:
+
+输入:       1         1
+          / \       / \
+         2   1     1   2
+
+        [1,2,1],   [1,1,2]
+
+输出: false
+*/
+
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {boolean}
+ */
+
+function TreeNode(val, left, right) {
+     this.val = (val===undefined ? 0 : val)
+     this.left = (left===undefined ? null : left)
+     this.right = (right===undefined ? null : right)
+}
+let p1 = new TreeNode(
+	1,
+	null,
+	new TreeNode(2),
+)
+let q1 = new TreeNode(
+	1,
+	new TreeNode(2),
+	null
+)
+var isSameTree = function(p, q) {
+	if(!p&&!q){
+		return true
+	}else if(!p || !q){
+		return false
+	}else if(p.val === q.val){
+		if(isSameTree(p.left,q.left)&&isSameTree(p.right,q.right)){
+			return true
+		}else{
+			return false
+		}
+	}else{
+		return false;
+	}
+};
+
+//console.log(isSameTree(p1,q1))
+</script>
+
+
+<script>
+/*
+101. 对称二叉树
+给定一个二叉树，检查它是否是镜像对称的。
+
+ 
+
+例如，二叉树 [1,2,2,3,4,4,3] 是对称的。
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+ 
+
+但是下面这个 [1,2,2,null,3,null,3] 则不是镜像对称的:
+
+    1
+   / \
+  2   2
+   \   \
+   3    3
+*/
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+
+const root1 = {
+	val:1,
+	left:{
+		val:2,
+	},
+	right:{
+		val:3,
+	}
+}
+// var isSymmetric = (root)=>{
+// 	return  isMirror(root,root)
+// };
+// var isMirror = (t1,t2)=>{
+//     if(!t1 && !t2){
+// 		return true;
+// 	}
+// 	if(!t1 || !t2 || t1.val !== t2.val){
+// 		return false;
+// 	}
+// 	return isMirror(t1.left,t2.right) && isMirror(t1.right , t2.left)
+// }
+
+const isSymmetric = (root) => {
+  if (!root) return true
+  let queue = [root.left, root.right]
+  while (queue.length > 0) {
+    let t1 = queue.shift(), t2 = queue.shift()
+    if (t1 === null && t2 === null) continue
+    if (t1 === null || t2 === null || t1.val != t2.val) return false
+    queue.push(t1.left, t2.right, t1.right, t2.left)
+  }
+  return true
+}
+console.log(isSymmetric(root1))
+</script>
+<script>
+/*
+二叉树的最大深度
+
+给定一个二叉树，找出其最大深度。
+
+二叉树的深度为根节点到最远叶子节点的最长路径上的节点数。
+
+说明: 叶子节点是指没有子节点的节点。
+
+示例：
+给定二叉树 [3,9,20,null,null,15,7]，
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回它的最大深度 3 。
+
+*/
+
+	var maxDepth = function(root) {
+		if(!root)return 0;
+		let leftMax = maxDepth(root.left);
+		let rightMax = maxDepth(root.right);
+		return 1 + Math.max(leftMax,rightMax)
+	};
+</script>
+
+<script>
+/*
+二叉树的最小深度
+给定一个二叉树，找出其最小深度。
+
+最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+
+说明: 叶子节点是指没有子节点的节点。
+
+示例:
+
+给定二叉树 [3,9,20,null,null,15,7],
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回它的最小深度  2.
+*/
+
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var minDepth = function(root) {
+	if(!root)return 0;
+	let leftMin= minDepth(root.left);
+	let rightMin = minDepth(root.right);
+	return 1 + Math.min(leftMin,rightMin)
+};
+//暂时错误 
+</script>
+<script>
+/*
+. 路径总和
+给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和。
+
+说明: 叶子节点是指没有子节点的节点。
+
+示例: 
+给定如下二叉树，以及目标和 sum = 22，
+
+              5
+             / \
+            4   8
+           /   / \
+          11  13  4
+         /  \      \
+        7    2      1
+返回 true, 因为存在目标和为 22 的根节点到叶子节点的路径 5->4->11->2。
+*/
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {number} sum
+ * @return {boolean}
+ */
+
+var hasPathSum = function(root, sum) {
+    if(!root) return false;
+    if(!root.left&&!root.right) return sum-root.val===0;
+    return hasPathSum(root.left,sum-root.val)||hasPathSum(root.right,sum-root.val);
+};
+
+</script>

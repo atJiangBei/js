@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="app"></div>
+	</body>
+</html>
+<script>
+	function h(tag,key,...children){
+		children = children.map(child=>{
+			if(typeof child === 'object'){
+				return  child
+			}else{
+				return {
+					undefined,undefined,undefined,text:child
+				}
+			}
+		})
+		return {
+			tag,
+			key,
+			children
+		}
+	}
+	var  app = document.getElementById("app");
+	function createElement(vnode){
+		const { tag ,children,text} = vnode;
+		if(typeof tag === 'string'){
+			vnode.el = document.createElement(tag);
+			children &&  children.forEach(child=>{
+				render(child,vnode.el)
+			})
+		}else{
+			vnode.el = document.createTextNode(text)
+		}
+		
+		return vnode.el;
+	}
+	function render(vnode,container){
+		const el = createElement(vnode);
+		container.appendChild(el);
+	}
+	var vnode = h("div",1,
+			h("div","a","a"),
+			h("div","b","b"),
+			h("div","c","c"),
+			h("div","d","d"),
+		)
+	render(vnode,app)
+	var newVnode =  h("div",1,
+			h("div","d","d"),
+			h("div","a","a"),
+			h("div","f","f"),
+			h("div","c","c"),
+			h("div","g","g"),
+		)
+	
+	function createIndexByKey(children){
+		let map = {};
+		children.forEach((item,index)=>{
+			if(item.key){
+				map[item.key] = index
+			}
+		})
+		return map;
+	}
+	function sameVnode(oldVnode,newVnode){
+		return oldVnode.tag === newVnode.tag && oldVnode.key === newVnode.key
+	}
+	function patch(oldVnode,newVnode){
+		if(newVnode.tag !== oldVnode.tag){
+			let el = createElement(newVnode);
+			oldVnode.el.parentNode.replaceChild(el,oldVnode.el);
+			return el;
+		}
+		if(!oldVnode.tag){
+			if (oldVnode.text !== newVnode.text) {
+				oldVnode.el.textContent = newVnode.text
+			}
+			return oldVnode.el;
+		}
+		
+		let el = newVnode.el = oldVnode.el;
+		let oldChildren = oldVnode.children || [];
+		let newChildren = newVnode.children || [];
+		
+		if(newChildren.length>0 && newChildren.length>0){
+			updateChildren(el,oldChildren,newChildren)
+		}else if(newChildren.length>0){
+			for (let i = 0; i < newChildren.length; i++) {
+				let child = newChildren[i];
+				el.appendChild(createElement(child))
+			}
+		}else if(oldChildren>0){
+			el.innerHTML = ''
+		}
+		return el;
+	}
+	function updateChildren(parentElm, oldCh, newCh){
+		let oldStartIndex = 0;
+		let oldEndIndex = oldCh.length-1;
+		let oldStartVnode = oldCh[0];
+		let oldEndVnode = oldCh[oldEndIndex];
+		
+		let newStartIndex = 0;
+		let newEndIndex = newCh.length-1;
+		let newStartVnode = newCh[0];
+		let newEndVnode = newCh[newEndIndex];
+		
+		let map = createIndexByKey(oldCh)
+		
+		while(oldStartIndex<=oldEndIndex && newStartIndex<=newEndIndex){
+			
+			if(!oldStartVnode){
+				oldStartVnode = oldCh[++oldStartIndex]
+			}else if(!oldEndVnode){
+				oldEndVnode = oldCh[--oldEndIndex]
+			}else if(sameVnode(oldStartVnode,newStartVnode)){
+				patch(oldStartVnode,newStartVnode)
+				oldStartVnode = oldCh[++oldStartIndex];
+				newStartVnode = newCh[++newStartIndex];
+			}else if(sameVnode(oldEndVnode,newEndVnode)){
+				patch(oldEndVnode,newEndVnode)
+				oldEndVnode = oldCh[--oldEndIndex];
+				newEndVnode = newCh[--newEndIndex];
+			}else if(sameVnode(oldStartVnode,newEndVnode)){
+				patch(oldStartVnode,newEndVnode)
+				parentElm.insertBefore(oldStartVnode.el,oldEndVnode.el.nextSibling)
+				oldStartVnode = oldCh[++oldStartIndex];
+				newEndVnode = newCh[--newEndIndex];
+			}else if(sameVnode(oldEndVnode,newStartVnode)){
+				patch(oldEndVnode,newStartVnode)
+				parentElm.insertBefore(oldEndVnode.el,oldStartVnode.el)
+				oldEndVnode = oldCh[--oldEndIndex];
+				newStartVnode = newCh[++newStartIndex];
+			}else{
+				//乱序
+				//用旧的节点的key生成一个映射表，那新的节点的key再映射表里面寻找，找到就做移动操作，找不到就直接插入即可
+				//debugger
+				let  findedIndex = map[newStartVnode.key];
+				if(findedIndex){
+					let findVnode = oldCh[findedIndex];
+					oldCh[findedIndex] = undefined;
+					parentElm.insertBefore(findVnode.el,oldStartVnode.el)
+					patch(findVnode,newStartVnode)
+				}else{
+					parentElm.insertBefore(createElement(newStartVnode),oldStartVnode.el)
+					
+				}
+				newStartVnode = newCh[++newStartIndex]
+			}
+		}
+		
+		if(newStartIndex<=newEndIndex){
+			for(let i=newStartIndex;i<=newEndIndex;i++){
+				let el = newCh[newEndIndex+1] == null ? null : newCh[newEndIndex+1].el;
+				parentElm.insertBefore(createElement(newCh[i]),el)
+			}
+		}
+		if(oldStartIndex <= oldEndIndex){
+			for(let i=oldStartIndex;i<=oldEndIndex;i++){
+				let child = oldCh[i];
+				if(child){
+					parentElm.removeChild(child.el)
+				}
+			}
+		}
+	}
+	setTimeout(()=>{
+		patch(vnode,newVnode)
+	},1000)
+</script>
+<script>
+	 //  function updateChildren (parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly) {
+  //   let oldStartIdx = 0
+  //   let newStartIdx = 0
+  //   let oldEndIdx = oldCh.length - 1
+  //   let oldStartVnode = oldCh[0]
+  //   let oldEndVnode = oldCh[oldEndIdx]
+  //   let newEndIdx = newCh.length - 1
+  //   let newStartVnode = newCh[0]
+  //   let newEndVnode = newCh[newEndIdx]
+  //   let oldKeyToIdx, idxInOld, vnodeToMove, refElm
+
+  //   // removeOnly is a special flag used only by <transition-group>
+  //   // to ensure removed elements stay in correct relative positions
+  //   // during leaving transitions
+  //   const canMove = !removeOnly
+
+  //   if (process.env.NODE_ENV !== 'production') {
+  //     checkDuplicateKeys(newCh)
+  //   }
+
+  //   while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+  //     if (isUndef(oldStartVnode)) {
+  //       oldStartVnode = oldCh[++oldStartIdx] // Vnode has been moved left
+  //     } else if (isUndef(oldEndVnode)) {
+  //       oldEndVnode = oldCh[--oldEndIdx]
+  //     } else if (sameVnode(oldStartVnode, newStartVnode)) {
+  //       patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+  //       oldStartVnode = oldCh[++oldStartIdx]
+  //       newStartVnode = newCh[++newStartIdx]
+  //     } else if (sameVnode(oldEndVnode, newEndVnode)) {
+  //       patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+  //       oldEndVnode = oldCh[--oldEndIdx]
+  //       newEndVnode = newCh[--newEndIdx]
+  //     } else if (sameVnode(oldStartVnode, newEndVnode)) { // Vnode moved right
+  //       patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+  //       canMove && nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))
+  //       oldStartVnode = oldCh[++oldStartIdx]
+  //       newEndVnode = newCh[--newEndIdx]
+  //     } else if (sameVnode(oldEndVnode, newStartVnode)) { // Vnode moved left
+  //       patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+  //       canMove && nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)
+  //       oldEndVnode = oldCh[--oldEndIdx]
+  //       newStartVnode = newCh[++newStartIdx]
+  //     } else {
+  //       if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)
+  //       idxInOld = isDef(newStartVnode.key)
+  //         ? oldKeyToIdx[newStartVnode.key]
+  //         : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)
+  //       if (isUndef(idxInOld)) { // New element
+  //         createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+  //       } else {
+  //         vnodeToMove = oldCh[idxInOld]
+  //         if (sameVnode(vnodeToMove, newStartVnode)) {
+  //           patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+  //           oldCh[idxInOld] = undefined
+  //           canMove && nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)
+  //         } else {
+  //           // same key but different element. treat as new element
+  //           createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+  //         }
+  //       }
+  //       newStartVnode = newCh[++newStartIdx]
+  //     }
+  //   }
+  //   if (oldStartIdx > oldEndIdx) {
+  //     refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm
+  //     addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)
+  //   } else if (newStartIdx > newEndIdx) {
+  //     removeVnodes(oldCh, oldStartIdx, oldEndIdx)
+  //   }
+  // }
+</script>

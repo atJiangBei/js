@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			ul {
+				list-style: none;
+				margin: 200px;
+			}
+
+			.ele {
+				width: 100%;
+				height: 40px;
+				border: 1px solid #999;
+				background: #EA6E59;
+				margin-top: 2px;
+				border-radius: 10px;
+				padding-left: 10px;
+				color: white;
+				cursor: move;
+			}
+		</style>
+	</head>
+	<body>
+		<ul id="container">
+		        <li class="ele" draggable="true">11111111111111111111111111</li>
+		        <li class="ele" draggable="true">22222222222222222222222222</li>
+		        <li class="ele" draggable="true">33333333333333333333333333</li>
+		        <li class="ele" draggable="true">44444444444444444444444444</li>
+		</ul>
+	</body>
+	<script>
+		var node = document.querySelector("#container");
+		var draging = null;
+		
+		node.ondragstart = function(event) {
+			//firefox设置了setData后元素才能拖动！！！！
+			event.dataTransfer.setData("te", event.target.innerText); //不能使用text，firefox会打开新tab
+			//event.dataTransfer.setData("self", event.target);
+			draging = event.target;
+		}
+		node.ondragover = function(event) {
+			event.preventDefault();
+			var target = event.target;
+			//因为dragover会发生在ul上，所以要判断是不是li
+			if (target.nodeName === "LI") {
+				if (target !== draging) {
+					var targetRect = target.getBoundingClientRect();
+					var dragingRect = draging.getBoundingClientRect();
+					if (target) {
+						if (target.animated) {
+							return;
+						}
+					}
+					const targetIndex = getIndex(target);
+					const dragingIndex = getIndex(draging);
+					
+					if (dragingIndex < targetIndex) {
+						console.log("移动元素下标小于当前位置元素")
+						target.parentNode.insertBefore(draging, target.nextSibling);
+					} else {
+						console.log("移动元素下标大于当前位置元素")
+						target.parentNode.insertBefore(draging, target);
+					}
+					runAnimate(dragingRect, draging);
+					runAnimate(targetRect, target);
+				}
+			}
+		}
+
+		//获取元素在父元素中的index
+		function getIndex(el) {
+			const parentNode = el.parentNode;
+			return Array.prototype.slice.call(parentNode.children).indexOf(el)
+		}
+
+		function runAnimate(prevRect, target) {
+			var ms = 300;
+
+			if (ms) {
+				var currentRect = target.getBoundingClientRect();
+
+				if (prevRect.nodeType === 1) {
+					console.log(111)
+					prevRect = prevRect.getBoundingClientRect();
+				}
+
+				setStyle(target, 'transition', 'none');
+				setStyle(target, 'transform', 'translate3d(' +
+					(prevRect.left - currentRect.left) + 'px,' +
+					(prevRect.top - currentRect.top) + 'px,0)'
+				);
+
+				target.offsetWidth; // 触发重绘
+
+				setStyle(target, 'transition', 'all ' + ms + 'ms');
+				setStyle(target, 'transform', 'translate3d(0,0,0)');
+
+				clearTimeout(target.animated);
+				target.animated = setTimeout(function() {
+					setStyle(target, 'transition', '');
+					setStyle(target, 'transform', '');
+					target.animated = false;
+				}, ms);
+			}
+		}
+		//给元素添加style
+		function setStyle(el, prop, val) {
+			var style = el && el.style;
+
+			if (style) {
+				if (val === void 0) {
+					if (document.defaultView && document.defaultView.getComputedStyle) {
+						val = document.defaultView.getComputedStyle(el, '');
+					} else if (el.currentStyle) {
+						val = el.currentStyle;
+					}
+
+					return prop === void 0 ? val : val[prop];
+				} else {
+					if (!(prop in style)) {
+						prop = '-webkit-' + prop;
+					}
+
+					style[prop] = val + (typeof val === 'string' ? '' : 'px');
+				}
+			}
+		}
+	</script>
+</html>

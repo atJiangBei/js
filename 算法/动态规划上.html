@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const climbStairs = function(n) {
+	    // 处理递归边界
+	    if(n === 1) {
+	        return 1
+	    }
+	    if(n === 2){
+	        return 2
+	    }
+	    // 递归计算
+	    return climbStairs(n-1) + climbStairs(n-2)
+	};
+	console.log(climbStairs(4))
+	const fn = [];
+	const climbStairs2 = function(n){
+		fn[1] = 1;
+		fn[2] = 2;
+		if(!fn[n]){
+			fn[n] = climbStairs2(n-1) + climbStairs2(n-2)
+		}
+		return fn[n]
+	}
+	
+	console.log(climbStairs2(4))
+	
+	const climbStairs3 = function(n){
+		const fn = [];
+		fn[1] = 1;
+		fn[2] = 2;
+		for(let i=3;i<=n;i++){
+			fn[i] = fn[i-1]+fn[i-2]
+		}
+		return fn[n]
+	}
+	console.log(climbStairs3(4))
+</script>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			#box{
+				height: 200px;
+				background: #2287F5;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box"></div>
+	</body>
+</html>
+<script>
+	window.onload = function() {
+		HTMLElement.prototype.aaa = function(){
+			console.log(this)
+		}
+		var btn = document.querySelector('#box');
+		console.log(btn.aaa())
+		btn.addEventListener('hehe', function(e) {
+			alert('okk!');
+		});
+		
+		btn.addEventListener("click",function(){
+			var event = new Event('hehe');
+			btn.dispatchEvent(event);
+		})
+	}
+</script>

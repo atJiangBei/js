@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const LinkedList1 = {
+		value:1,
+		next:{
+			value:1,
+			next:{
+				value:2,
+				next:{
+					value:3,
+					next:{
+						value:3,
+						next:{
+							value:4
+						}
+					}
+				}
+			}
+		}
+	}
+	const deleteRepeat = (head)=>{
+		let needle = head;
+		while(needle != null && needle.next != null){
+			if(needle.value === needle.next.value){
+				needle.next = needle.next.next
+			}else{
+				needle = needle.next
+			}
+		}
+		return head
+	}
+	const deleteDuplicates = function(head) {
+	    let cur = head;
+	    while(cur != null && cur.next != null) {
+	        if(cur.value === cur.next.value) {
+	            cur.next = cur.next.next;
+	        } else {
+	            cur = cur.next;
+	        }
+	    }
+	    return head;
+	};
+	deleteRepeat(LinkedList1)
+	console.log(LinkedList1)
+</script>

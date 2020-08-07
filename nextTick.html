@@ -5,6 +5,7 @@
 		<title></title>
 	</head>
 	<body>
+		<div id="app"></div>
 	</body>
 </html>
 <script>
@@ -28,7 +29,7 @@
 			copies[i]()
 		}
 	}
-
+	
 	function nextTick(cb) {
 		let _resolve;
 		callBacks.push(() => {
@@ -48,10 +49,69 @@
 			})
 		}
 	}
-	nextTick(function(res) {
-		console.log(res,1)
-	})
-	nextTick().then(res=>{
-		console.log(res,12)
-	})
+</script>
+<script>
+	let id = 0;
+	let map = new Map();
+	let flag = true;
+	const timerFn = ()=>{
+		Promise.resolve().then(run)
+	}
+	function run(){
+		flag = true;
+		const copies = map;
+		map = new Map();
+		for (let [key] of copies) {
+			copies.get(key)()
+		}
+	}
+	function $nextTick(cb,key){
+		if(key){
+			map.set(cb,cb)
+		}else{
+			map.set(id++,cb)
+		}
+		if(flag){
+			flag = false;
+			timerFn()
+		}
+	}
+	const app = document.getElementById("app");
+	const data = {
+		count:0
+	}
+	function update(key){
+		$nextTick(render,key)
+	}
+	function render(){
+		console.log("渲染")
+		app.innerHTML = data.count;
+	}
+	render()
+	function define(obj,key,val){
+		Object.defineProperty(obj,key,{
+			set(nvl){
+				if(nvl === val){
+					return;
+				}
+				val = nvl;
+				update(key)
+			},
+			get(){
+				return val
+			}
+		})
+	}
+	
+	
+	
+	define(data,"count",data["count"])
+	setTimeout(()=>{
+		data.count = 1;
+		data.count = 2;
+		data.count = 3;
+		$nextTick(()=>{
+			console.log(app.innerHTML)
+		})
+	},1000)
 </script>
