@@ -57,10 +57,8 @@
 					const dragingIndex = getIndex(draging);
 					
 					if (dragingIndex < targetIndex) {
-						console.log("移动元素下标小于当前位置元素")
 						target.parentNode.insertBefore(draging, target.nextSibling);
 					} else {
-						console.log("移动元素下标大于当前位置元素")
 						target.parentNode.insertBefore(draging, target);
 					}
 					runAnimate(dragingRect, draging);

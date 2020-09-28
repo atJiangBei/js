@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div>
+			<input placeholder="姓名" id="addName"/>
+			<input placeholder="年龄" type="number"  id="addAge"/>
+			<input placeholder="唯一值id"  id="keyId"/>
+			<button type="button" id="add">新增</button>
+			<button type="button" id="update">更新</button>
+			<button type="button" id="delete">删除</button>
+		</div>
+		<div>
+			<input placeholder="姓名" id="find_result_from_name"/>
+			<span id="find_block"></span>
+			<button type="button" id="find">按照姓名查找数据</button>
+		</div>
+	</body>
+</html>
+<script>
+	var addName = document.getElementById("addName");
+	var addAge = document.getElementById("addAge");
+	var addbtn = document.getElementById("add");
+	var updatebtn = document.getElementById("update");
+	var deletebtn = document.getElementById("delete");
+	var  idVal = document.getElementById("keyId");
+	var find = document.getElementById("find");
+	var findResultFromName = document.getElementById("find_result_from_name");
+	var findBlock = document.getElementById("find_block");
+	var selectors = [];
+	function createId(nums){
+		return  Math.random().toString(36).substr(nums)
+	}
+	var indexs = ["name","age"];
+	function openIndexDb(databaseName,storeName,indexs){
+		return new Promise(function(res,rej){
+			try{
+				var request = window.indexedDB.open("map",2);
+			}catch(e){
+				rej(e)
+			}
+			request.onerror = function(e){
+				rej(e.target.error);
+				console.log("打开失败")
+			}
+			request.onsuccess = function(event){
+				res(request.result)
+				console.log("打开成功")
+			}
+			request.onupgradeneeded = function (event) {
+			  var db = event.target.result;
+			  if (!db.objectStoreNames.contains(storeName)) {
+			      var objstore = db.createObjectStore(storeName, { keyPath: "id" });
+				  indexs.forEach(function(key){
+					objstore.createIndex(key,key,{unique: false});
+				  })
+			    }
+			}
+		})
+	}
+	openIndexDb("map","lenandlat",indexs).then(function(db){
+		updatebtn.onclick = function(){
+			ubdate(db)
+		}
+		deletebtn.onclick = function(){
+			deletefn(db)
+		}
+		addbtn.onclick = function(){
+			add(db)
+		}
+		find.onclick = function(){
+			findObjFromKeyVal(db,"lenandlat","name",findResultFromName.value).then(function(data){
+				console.log(data)
+				findBlock.innerHTML = JSON.stringify(data);
+			}).catch(function(){
+				findBlock.innerHTML = "没找到";
+			})
+		}
+		findAll(db,"lenandlat").then(data=>{
+			console.log(data)
+		})
+	})
+	
+	function findObjFromKeyVal(db,storeName,key,value){
+		var store = db.transaction([storeName], 'readonly').objectStore(storeName);
+		var index = store.index(key);
+		var request = index.get(value);
+		return new Promise(function(res,rej){
+			request.onerror = function(e){
+				rej(e.target.error)
+			}
+			request.onsuccess = function(){
+				if(request.result){
+					res(request.result)
+				}else{
+					rej(request.result)
+				}
+			}
+		})
+	}
+	
+	
+	function findAll(db,storeName){
+		const request = db.transaction(storeName).objectStore(storeName).getAll();
+		return new Promise(function(res,rej){
+			request.onerror = function(){
+				rej(this.error)
+			}
+			request.onsuccess = function(){
+				res(this.result)
+			}
+		})
+	}
+	
+	function add(db) {
+		if(!addName.value || !addAge.value){
+			alert("请输入姓名或者年龄");
+			return;
+		}
+	  var request = db.transaction(['lenandlat'], 'readwrite')
+	    .objectStore('lenandlat')
+	    .add({id:createId(2),name: addName.value, age: addAge.value });
+	
+	  request.onsuccess = function (event) {
+	    alert('数据添加成功');
+		addName.value = '';
+		addAge.value = '';
+	  };
+	  request.onerror = function (event) {
+	    console.log('数据写入失败',event.target.error);
+	  }
+	}
+	function ubdate(db) {
+		if(!idVal.value){
+			alert("更新操作项需要唯一值id作为依托 ,请根据查询输入");
+			return;
+		}
+		if(!addName.value || !addAge.value){
+			alert("请输入姓名或者年龄");
+			return;
+		}
+	  var request = db.transaction(['lenandlat'], 'readwrite')
+	    .objectStore('lenandlat')
+	    .put({id:createId(2),name: addName.value, age: addAge.value,id:idVal.value });
+	
+	  request.onsuccess = function (event) {
+	    alert('数据添加成功');
+		addName.value = '';
+		addAge.value = '';
+		idVal.value = '';
+	  };
+	  request.onerror = function (event) {
+	    console.log('数据写入失败',event.target.error);
+	  }
+	}
+	function deletefn(db){
+		if(!idVal.value){
+			alert("删除项需要唯一值id,请根据查询输入");
+			return;
+		}
+		var request = db.transaction(['lenandlat'], 'readwrite').objectStore('lenandlat').delete(idVal.value);
+		request.onsuccess = function (event) {
+			alert('数据删除成功');
+			idVal.value = '';
+		};
+		request.onerror = function (event) {
+		  console.log('数据删除成功',event.target.error);
+		}
+	}
+</script>
+<script>
+	// function findAll(db){
+	// 	var objectStore = db.transaction('lenandlat').objectStore('lenandlat');
+		
+	//    objectStore.openCursor().onsuccess = function (event) {
+	// 	 var cursor = event.target.result;
+	
+	// 	 if (cursor) {
+	// 	   console.log('Id: ' + cursor.key);
+	// 	   console.log('obj: ' + JSON.stringify(cursor.value));
+	// 	   cursor.continue();
+	// 	}
+	//   };
+	// }
+</script>

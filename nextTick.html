@@ -5,7 +5,12 @@
 		<title></title>
 	</head>
 	<body>
-		<div id="app"></div>
+		<div id="app">
+			<div style="background: #2287F5;height: 20px;"></div>
+		</div>
+		<div id="btn-margin">
+			<button id="btn">更改数据</button>
+		</div>
 	</body>
 </html>
 <script>
@@ -51,11 +56,13 @@
 	}
 </script>
 <script>
+	let currentFlushTimestamp = 0;
 	let id = 0;
 	let map = new Map();
 	let flag = true;
 	const timerFn = ()=>{
-		Promise.resolve().then(run)
+		//Promise.resolve().then(run);
+		setTimeout(run)
 	}
 	function run(){
 		flag = true;
@@ -84,8 +91,10 @@
 		$nextTick(render,key)
 	}
 	function render(){
+		currentFlushTimestamp = getnow()
 		console.log("渲染")
-		app.innerHTML = data.count;
+		app.querySelector("div").style.display = data.count;
+		app.querySelector("div").innerText = data.count;
 	}
 	render()
 	function define(obj,key,val){
@@ -106,12 +115,30 @@
 	
 	
 	define(data,"count",data["count"])
-	setTimeout(()=>{
-		data.count = 1;
-		data.count = 2;
-		data.count = 3;
-		$nextTick(()=>{
-			console.log(app.innerHTML)
-		})
-	},1000)
+	// setTimeout(()=>{
+	// 	data.count = 1;
+	// 	data.count = 2;
+	// 	data.count = 3;
+	// 	$nextTick(()=>{
+	// 		console.log(app.innerHTML)
+	// 	})
+	// },1000)
+	function getnow(){
+		//return Date.now();
+		return performance.now();
+	}
+	function child(){
+		
+	}
+	function parent(){
+		
+	}
+	window.onresize = function(){
+		if(window.innerWidth > 800){
+			data.count = "block";
+		}else{
+			data.count = "none";
+		}
+	}
+	
 </script>

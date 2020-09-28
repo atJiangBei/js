@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body style="height: 1000px;">
+		<input id="text" />
+	</body>
+</html>
+<script>
+	
+	Function.prototype.myBind = function(target){
+		var fn = this;
+		return function(...arg){
+			fn.apply(target,arg)
+		}
+	}
+	
+	var a = 1;
+	var b = {
+		a:2,
+		con(...arg){
+			console.log(this.a,arg)
+		}
+	}
+	
+	b.con.bind(window)(1,2,3)
+</script>

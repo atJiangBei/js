@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	var arr = [1,2,3,4,5];
+	
+	Array.prototype.myFilter = function(fn,thisValue){
+		thisValue = thisValue || window;
+		const arr = [];
+		for(let i=0;i<this.length;i++){
+			if(fn.call(thisValue,this[i],i,this)){
+				arr.push(this[i])
+			}
+		}
+		return arr;
+	}
+	
+	Array.prototype.myMap = function(fn,thisValue){
+		thisValue = thisValue || window;
+		const arr = [];
+		for(let i=0;i<this.length;i++){
+			arr.push(fn.call(thisValue,this[i],i,this))
+		}
+		return arr;
+	}
+	
+	Array.prototype.mySome = function(fn,thisValue){
+		thisValue = thisValue || window;
+		const arr = [];
+		for(let i=0;i<this.length;i++){
+			if(fn.call(thisValue,this[i],i,this)){
+				return true
+			}
+		}
+		return false;
+	}
+	Array.prototype.myEvery = function(fn,thisValue){
+		thisValue = thisValue || window;
+		const arr = [];
+		for(let i=0;i<this.length;i++){
+			if(!fn.call(thisValue,this[i],i,this)){
+				return false
+			}
+		}
+		return true;
+	}
+	var n = arr.every(function(currentValue,index,arr){
+		
+		return currentValue >1
+	},{name:1})
+	console.log(n)
+</script>

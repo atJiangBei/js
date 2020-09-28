@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>DataTransfer.setData()/.getData()/.clearData()</title>
+    <style>
+        div {
+            margin: 0em;
+            padding: 2em;
+        }
+        #source {
+            color: blue;
+            border: 1px solid black;
+        }
+        #box {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <h1>
+            <code>DataTransfer.setData()</code> <br>
+            <code>DataTransfer.getData()</code> <br>
+            <code>DataTransfer.clearData()</code>
+        </h1>
+        <div>
+            <p id="source" draggable="true">
+                选中这个元素
+            </p>
+        </div>
+        <div id="box"  >
+            Drop Zone
+        </div>
+    </section>
+    <!-- js -->
+    <script>
+        
+		var source = document.getElementById("source");
+		source.ondragstart = function(ev) {
+            console.log("dragStart");
+            ev.currentTarget.style.border = "dashed";
+            ev.dataTransfer.setData("id", ev.target.id);
+        }
+		source.ondrag = function(){
+			console.log("拖拽中")
+		}
+		source.ondragend = function(){
+			console.log("拖拽结束")
+		}
+		var box = document.getElementById("box");
+		box.ondrop = function(ev) {
+			console.log(ev.dataTransfer.files)
+            console.log("Drop");
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("id");
+            ev.target.appendChild(document.getElementById(data));
+            ev.dataTransfer.clearData();
+        }
+		box.ondragover = function dragover_handler(ev) {
+			//进入区域，触发多次
+            //console.log("dragOver");
+            ev.preventDefault();
+        }
+		box.ondragleave = function(){
+			console.log("离开放置区域")
+		}
+		box.ondragenter = function(){
+			console.log("进入放置区域")
+		}
+		
+    </script>
+</body>
+</html>

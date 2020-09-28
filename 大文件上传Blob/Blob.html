@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input type="file" id="fil"/>
+		<button id="merge-btn">合并文件</button>
+	</body>
+</html>
+<script>
+	const fileToBase64 = (file)=>{
+		var reslove = null, reject = null;
+		var p = new Promise((res,rej)=>{reslove = res, reject = rej;});
+		var fileReader = new FileReader();
+		fileReader.onload = function(e){
+			reslove(e.target.result)
+		}
+		fileReader.readAsDataURL(file)
+		return p;
+	}
+	const uploadUrl = "http://127.0.0.1:3000/bigFilesUpload";
+	const asyncXhr = (url,data)=>{
+		var reslove = null, reject = null;
+		var p = new Promise((res,rej)=>{reslove = res, reject = rej;});
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function(){
+			if(xhr.status === 200 && xhr.readyState === 4){
+				reslove(xhr.response)
+			}
+		}
+		xhr.onerror = function(){
+			reject("错误")
+		}
+		xhr.open("POST",url);
+		xhr.send(data);
+		return p;
+	}
+	// asyncXhr(uploadUrl,JSON.stringify({name:"二哈"})).then(data=>{
+	// 	console.log(JSON.parse(data))
+	// })
+	const spliceFile = (file,size)=>{
+		const arr = [];
+		let initVal = 0;
+		let count = 0;
+		while(initVal < file.size){
+			arr.push({filename:file.name,hash:file.name+'-'+count,file:file.slice(initVal,initVal+size)});
+			initVal += size;
+			count++;
+		}
+		return arr;
+	}
+	document.getElementById("fil").onchange = async function(event){
+		var file = event.target.files[0];
+		event.target.value = '';
+		var fileBlobs = spliceFile(file,1024*10);
+		console.log(fileBlobs);
+		fileBlobs.forEach(({file,filename,hash})=>{
+			console.log(file)
+			let formdata = new FormData();
+			formdata.append("file",file);
+			formdata.append("hash",hash);
+			formdata.append("filename",filename);
+			asyncXhr(uploadUrl,formdata).then(data=>{
+				console.log(data)
+			})
+		})
+		// const base64 = await fileToBase64(file);
+		// var formdata = new FormData();
+		// formdata.append("file",base64);
+		// formdata.append("filename",file.name);
+		// asyncXhr(uploadUrl,formdata).then(data=>{
+		// 	console.log(data)
+		// })
+	}
+	document.querySelector("#merge-btn").onclick = function(){
+		asyncXhr("http://127.0.0.1:3000/mergeBigFile",JSON.stringify({filename:"btn.png",size:1024*10})).then(data=>{
+			console.log(data)
+		})
+	}
+</script>
+<script>
+	
+</script>

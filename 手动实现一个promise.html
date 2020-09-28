@@ -8,52 +8,84 @@
 	</body>
 </html>
 <script>
-const PENDING = Symbol('pending')
-const FULFILLED = Symbol('fulfilled')
-const REJECTED = Symbol('rejected')
 
-// Promise 形式的异步方法定义
-var promiseAsyncFunc = function() {
-  var status = PENDING
-  var fulfillCallback
-  var rejectCallback
 
-  return {
-    fulfill: function(value) {
-      if (status !== PENDING) return
-      if (typeof fulfillCallback === 'function') {
-        fulfillCallback(value)
-        status = FULFILLED
-      }
-    },
-    reject(error) {
-      if (status !== PENDING) return
-      if (typeof rejectCallback === 'function') {
-        rejectCallback(error)
-        status = REJECTED
-      }
-    },
-    promise: {
-      then: function(_fulfillCallback, _rejectCallback) {
-        fulfillCallback = _fulfillCallback
-        rejectCallback = _rejectCallback
-      }
-    }
-  }
+
+class MyPromise{
+	constructor(cb){
+		this.status = "pending";
+		this.result = undefined;
+		this.error = undefined;
+		this.resolves = [];
+		this.rejects = [];
+		const resolve = (result)=>{
+			this.result = result;
+			this.status = "resolved";
+			this.resolves.forEach(fn=>{
+				fn(this.result)
+			})
+		}
+		const reject = (error)=>{
+			this.error = error;
+			this.status = "rejected";
+			this.rejects.forEach(err=>{
+				err(this.error)
+			})
+		}
+		try{
+			cb(resolve,reject);
+		}catch(e){
+			this.error = e;
+			this.status = "rejected";
+			this.rejects.forEach(err=>{
+				err(this.error)
+			})
+		}
+	}
+	then(resolve,reject){
+		if(this.status === "resolved"){
+			resolve(this.result)
+			return;
+		}
+		if(this.status === "rejected"){
+			reject(this.error);
+			return;
+		}
+		this.resolves.push(resolve);
+		this.rejects.push(reject);
+	}
 }
 
-let ownPromise = function(asyncCall) {
-  let defer = promiseAsyncFunc()
-  asyncCall(defer.fulfill, defer.reject)
-  return defer.promise
-}
 
-// Promise 形式的异步方法调用
-ownPromise(function(fulfill, reject) {
-  setTimeout(() => {
-    var randomNumber = Math.random()
-    if (randomNumber > 0.5) fulfill(randomNumber)
-    else reject(randomNumber)
-  }, 1000)
-}).then(data => console.log(data), err => console.log(err))
+new MyPromise((res,rej)=>{
+	res(1)
+}).then(data=>{
+	console.log("成功",data)
+})
+
+
+
+new MyPromise((res,rej)=>{
+	setTimeout(rej,1000,2)
+}).then(data=>{
+	console.log(data)
+},(error)=>{
+	console.log("失败",error)
+})
+
+
+
+new MyPromise((res,rej)=>{
+	throw new Error("抛出错误")
+	setTimeout(rej,2000,"error")
+}).then(data=>{
+	console.log(data)
+},(err)=>{
+	console.log(err)
+})
+
+
+
+
+
 </script>
