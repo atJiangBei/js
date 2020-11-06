@@ -24,9 +24,9 @@
 		btn.addEventListener('hehe', function(e) {
 			alert('okk!');
 		});
-		
+		var event = new Event('hehe');
 		btn.addEventListener("click",function(){
-			var event = new Event('hehe');
+			
 			btn.dispatchEvent(event);
 		})
 	}

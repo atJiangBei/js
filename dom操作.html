@@ -6,47 +6,24 @@
 	</head>
 	<body>
 		<div id="app">
-			<div></div>
-			<ul>
-				<li></li>
-				<li></li>
-				<li></li>
-				<li></li>
-				<li></li>
-				<li></li>
-				<li></li>
-				<li></li>
-				<li></li>
-				<li></li>
-				<li></li>
-			</ul>
+			<button type="button" id="btn"></button>
 		</div>
-		<input type="file" id="add"/>
 	</body>
 </html>
 <script>
 	var app = document.getElementById("app");
-	var fragment = document.createDocumentFragment();
-	let firstChild = app.firstChild;
-	while(firstChild){
-		console.log(firstChild)
-		fragment.insertBefore(firstChild,null)
-		firstChild = app.firstChild
+	var btn = document.querySelector("#btn");
+	btn.onclick = function(){
+		console.log(1)
+		Promise.resolve().then(()=>{
+			console.log(3)
+		})
 	}
-	console.log(fragment)
-</script>
-<script>
-	const add = document.getElementById("add")
-	const fr = new FileReader()
-	
-	add.onchange = function(event){
-		const file = this.files[0]
-		
-		var reader = new FileReader();
-		       reader.onload = function(e){
-		          console.log(e.target.result)
-		
-		        }
-		        reader.readAsDataURL(file);
+	app.onclick = function(){
+		console.log(2)
+		Promise.resolve().then(()=>{
+			console.log(4)
+		})
 	}
+	btn.click()
 </script>
