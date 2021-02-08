@@ -9,6 +9,10 @@
 	<div id="hehe"></div>
 	sdsfsd
 </div>
+<p id="margin">456</p>
+<div id="box">
+	<p id="padding">123</p>
+</div>
 <script type="text/javascript">
     var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
     var element = document.querySelector('#test');
@@ -28,3 +32,9 @@
 </script>
 </body>
 </html>
+<script>
+	var box = document.getElementById("box");
+	var padding = document.getElementById("padding");
+	var margin = document.getElementById("margin");
+	box.insertBefore(margin,padding)
+</script>
