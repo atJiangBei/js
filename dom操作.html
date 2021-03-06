@@ -4,10 +4,11 @@
 		<meta charset="utf-8">
 		<title></title>
 	</head>
-	<body>
+	<body style="height: 1000px;">
 		<div id="app">
 			<button type="button" id="btn"></button>
 		</div>
+		<a href="www.baidu.com">fdfd</a>
 	</body>
 </html>
 <script>
@@ -26,4 +27,29 @@
 		})
 	}
 	btn.click()
+</script>
+<script>
+	var a = ['ant','Bug','cat','Dog'];
+	const fn = ()=>{
+		try{
+			a.forEach(item=>{
+				if(item.indexOf('p') > -1){
+					throw ({name:2})
+				}
+			})
+			throw ({name:1})
+		}catch(e){
+			return e
+		}
+	}
+	
+</script>
+<script>
+
+</script>
+<script>
+	const dfn = function(a,b,c,d){
+		console.log(arguments.callee.length,arguments.length)
+	}
+	dfn(1,2,3)
 </script>

@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			/* 公告部分 */
+			.create-img-btn{
+				padding: 5px 10px;
+				font-size: 14px;
+				line-height: 20px;
+				background: #FBAE00;
+				color: #FFF;
+				border-radius: 3px;
+				cursor: pointer;
+				opacity: 0.8;
+				user-select: none;
+			}
+			.create-img-btn:active{
+				opacity: 1;
+			}
+			/* 最上层容器 */
+			.create-container{
+				display: flex;
+				align-items: flex-start;
+				padding-bottom: 20px;
+			}
+			/* 控制台 */
+			.do-container{
+				width: 200px;
+				padding-bottom: 20px;
+				border: 1px dashed #FCC000;
+			}
+			.do-container h3{
+				line-height: 32px;
+				text-align: center;
+				font-size: 18px;
+				background: #FCC000;
+				color: #333333;
+				letter-spacing: 1px;
+			}
+			
+			.console-container{
+				
+			}
+			.add-img-to-canvas{
+				width: 36px;
+				height: 36px;
+				background: url(http://h5.jiandantianqi.com/event/common/icon/camera.png) no-repeat center;
+				background-size: 100% 100%;
+				margin: 10px auto;
+				position: relative;
+			}
+			.add-img-to-canvas>input{
+				width: 100%;
+				height: 100%;
+				position: absolute;
+				left: 0;
+				top: 0;
+				opacity: 0;
+				cursor: pointer;
+			}
+			.threshold-container{
+				position: relative;
+				padding: 4px 0;
+				width: 84px;
+				margin: 20px auto;
+			}
+			.threshold-container>li{
+				list-style: none;
+				cursor: pointer;
+			}
+			.threshold-container .threshold-value{
+				background: #FBAE00;
+				height: 22px;
+				width: 24px;
+				padding: 0 30px;
+				font-size: 18px;
+				font-weight: 900;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				color: #fff;
+				border-radius: 16px;
+			}
+			.threshold-container .threshold-add{
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 30px;
+				height: 30px;
+				background: url(http://h5.jiandantianqi.com/event/common/icon/add_value.png) no-repeat center;
+				background-size: 100% 100%;
+			}
+			.threshold-container .threshold-reduce{
+				position: absolute;
+				top: 0;
+				right: 0;
+				width: 30px;
+				height: 30px;
+				background: url(http://h5.jiandantianqi.com/event/common/icon/reduce_value.png) no-repeat center;
+				background-size: 100% 100%;
+			}
+			/* 设置画布尺寸 */
+			.layer-size-container{
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin: 20px auto;
+			}
+			.layer-size-container>label{
+				display: block;
+				font-size: 14px;
+				padding: 0 5px;
+			}
+			.layer-size-container>input{
+				border: 1px solid #CCCCCC;
+				width: 50px;
+				height: 24px;
+				text-align: center;
+				border-radius: 5px;
+				font-size: 14px;
+				padding: 0;
+				outline: none;
+			}
+			/* 设置画布颜色 */
+			.layer-rgb-container{
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-wrap: wrap;
+				margin: 20px auto;
+			}
+			.layer-rgb-container>div{
+				width: 200px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				padding-bottom: 10px;
+			}
+			.layer-rgb-container input{
+				border: 1px solid #CCCCCC;
+				width: 50px;
+				height: 24px;
+				text-align: center;
+				border-radius: 5px;
+				font-size: 14px;
+				padding: 0;
+				outline: none;
+			}
+			.layer-rgb-container label{
+				display: block;
+				font-size: 14px;
+				padding: 0 5px;
+			}
+			/* 预览颜色 */
+			.preview-block-container{
+				padding-top: 10px;
+			}
+			.block-rgb-container{
+				width: 80px;
+				height: 30px;
+				margin-left: 10px;
+			}
+			/* 初始化画布按钮 */
+			.init-create-canvas{
+				display: flex;
+				align-items: center;
+				justify-content: space-around;
+				padding-bottom: 10px;
+			}
+			/* 当前图层 */
+			.current-layer-container{
+				min-height: 200px;
+				padding: 20px 0;
+			}
+			.set-size-container{
+				background: transparent;
+				margin: 0 20px;
+				padding-bottom:10px;
+				box-shadow:0 1px 2px -2px rgba(0,0,0,.16),0 3px 6px 0 rgba(0,0,0,.12),0 5px 12px 4px rgba(0,0,0,.09);
+				transition: all .3s;
+				cursor: pointer;
+			}
+			.set-size-container:hover{
+				border-color:transparent;
+				box-shadow:0 1px 2px -2px rgba(0,0,0,.3),0 3px 6px 0 rgba(0,0,0,.3),0 5px 12px 4px rgba(0,0,0,.3);
+				transition: all .3s;
+			}
+			.set-size-head{
+				height: 33px;
+				line-height: 33px;
+				text-align: center;
+				background: #FBAE00;
+				border-top-left-radius: 8px;
+				border-top-right-radius: 8px;
+				font-weight: 600;
+				font-size: 14px;
+				position: relative;
+			}
+			.set-size-head span{
+				position: absolute;
+				right: 4px;
+				top: 4px;
+				width: 28px;
+				height: 25px;
+				background:#FBAE00 url(http://h5.jiandantianqi.com/event/common/icon/delete.png) no-repeat center;
+				background-size: 100% 100%;
+			}
+			.set-layer-name{
+				font-size: 12px;
+				text-align: center;
+				padding: 5px;
+				line-height: 18px;
+			}
+			.set-size-content{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding-top: 10px;
+			}
+			.set-size-content>div{
+				width: 30px;
+				height: 30px;
+				border-radius: 3px;
+				margin-right: 5px;
+				display: flex;
+				justify-content: center;
+				align-items: center;	
+			}
+			.set-size-content .set-size-add{
+				background:#FBAE00 url(http://h5.jiandantianqi.com/event/common/icon/prev_zindex.png) no-repeat center;
+				background-size: 100% 100%;
+			}
+			.set-size-content .set-size-block{
+				background:#FBAE00;
+				color: #fff;
+				font-size: 20ppx;
+			}
+			.set-size-content .set-size-reduce{
+				background:#FBAE00 url(http://h5.jiandantianqi.com/event/common/icon/next_zindex.png) no-repeat center;
+				background-size: 100% 100%;
+			}
+			.set-position-content{
+				
+			}
+			.set-position-content label{
+				display: block;
+				font-size: 14px;
+				padding: 0 5px;
+			}
+			.set-position-content input{
+				border: 1px solid #CCCCCC;
+				width: 50px;
+				height: 24px;
+				text-align: center;
+				border-radius: 5px;
+				font-size: 14px;
+				padding: 0;
+				outline: none;
+			}
+			.set-position-xy{
+				display: flex;
+				padding: 10px 0;
+			}
+			.set-position-container{
+				display: flex;
+				justify-content: center;
+			}
+			/* 是否为人像层 */
+			.set-layer-attribute{
+				font-size:14px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				padding: 5px 0;
+			}
+			/* 最终 */
+			.last-container{
+				padding-top: 20px;
+				display: flex;
+				justify-content: space-around;
+			}
+			/* 模拟画布 */
+			.canvas-simulation{
+				width: 720px;
+				height: 1080px;
+				position: relative;
+				background: rgb(240,240,240);
+			}
+			.canvas-simulation img{
+				position: absolute;
+				user-select: none;
+				cursor: move;
+				left: 0;
+				top: 0;
+			}
+			.canvas-simulation img.canvas-layer-selected{
+				box-shadow: 0 0 1px 1px #FBAE00;
+			}
+			/* 弹层 */
+			.create-img-block-popup{
+				position: absolute;
+				left: 0;
+				top: 0;
+				z-index: 1000;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background: rgba(0,0,0,0.3);
+				transform: scale(0);
+				transition: all .3s;
+			}
+			.create-img-block-popupoff{
+				transform: scale(1);
+				transition: all .3s;
+			}
+			.create-img-block-popup img{
+				width: 375px;
+				border-radius: 1px;
+			}
+			.create-img-block-popup span{
+				position: absolute;
+				right: 10px;
+				top: 10px;
+				width: 36px;
+				height: 36px;
+				background:url(http://h5.jiandantianqi.com/event/common/icon/close.png) no-repeat center;
+				background-size: 100% 100%;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div class="create-container">
+			<div class="do-container">
+				<h3>初始画布</h3>
+				<div>
+					<div class="layer-size-container">
+						<label>高:</label>
+						<input type="number" value="1080" min="1080" max="3000" id="canvasHeight" placeholder="高度"/>
+						<label>宽:</label>
+						<input type="number" value="720" min="720" min="2000" id="canvasWidth" placeholder="宽度"/>
+					</div>
+					<div class="layer-rgb-container" id="layerRgbContainer">
+						<div>
+							<label>R:</label>
+							<input type="number" value="240" min="0" max="255" placeholder="高度"/>
+						</div>
+						<label>G:</label>
+						<input type="number" value="240" min="0" max="255" placeholder="宽度"/>
+						<label>B:</label>
+						<input type="number" value="240" min="0" max="255" placeholder="宽度"/>
+						<div class="preview-block-container">
+							<div class="create-img-btn" data-type="preview">预览</div>
+							<div class="block-rgb-container" id="blockRgbContainer" style="background: rgb(240,240,240);"></div>
+						</div>
+					</div>
+					<div class="init-create-canvas">
+						<div class="create-img-btn" id="createCanvas">生成画布</div>
+						<div class="create-img-btn" id="resetCanvas">重置画布</div>
+					</div>
+				</div>
+				<h3>新增图层</h3>
+				<div class="add-img-to-canvas" id="addImgToCanvas">
+					<input type="file" id="uploadControl" accept="image/png,image/jpeg,image/jpg"/>
+				</div>
+				<h3>图层位置调整度</h3>
+				<div class="console-container">
+					<ul class="threshold-container">
+						<li class="threshold-add" id="thresholdAdd"></li>
+						<li class="threshold-value" id="thresholdValue">1</li>
+						<li class="threshold-reduce" id="thresholdReduce"></li>
+					</ul>
+				</div>
+				<h3>当前图层</h3>
+				<div class="current-layer-container" id="currentLayerContainer">
+					<!-- <div class="set-size-container">
+						<div class="set-size-head">
+							图层信息
+							<span data-type='delete'></span>
+						</div>
+						<div class="set-layer-name">
+							图片名称：刘亦菲.jpg
+						</div>
+						<div class="set-size-content">
+							<div class="set-size-add" data-type='add'></div>
+							<div class="set-size-block">0</div>
+							<div class="set-size-reduce" data-type='reduce'></div>
+						</div>
+						<div class="set-position-content">
+							<div class="set-position-xy">
+								<label>x:</label>
+								<input type="number" data-type='x' value="0" min="0"/>
+								<label>y:</label>
+								<input type="number" data-type='y' value="0" min="0"/></div>
+							<div class="set-position-container">
+								<div class="create-img-btn" data-type="setxy">根据xy坐标调整位置</div>
+							</div>
+						</div>
+						<div class="set-layer-attribute">
+							<label>是否为人像层：</label>
+							<input type="checkbox" data-type="ispeople"/>
+						</div>
+					</div> -->
+				</div>
+				<h3>最终</h3>
+				<div class="last-container">
+					<div class="create-img-btn" id="previewBlockImg">预览</div>
+					<div class="create-img-btn" id="submitSave">保存上传</div>
+				</div>
+			</div>
+			<div class="canvas-simulation" id="canvasSimulation">
+				
+			</div>
+			<div class="create-img-block-popup" id="createImgBlockPopup">
+				<span data-type="close"></span>
+				<img src="" id="blockCanvasContent"/>
+			</div>
+		</div>
+		<script>
+			function createImgByCanvas({
+				el,
+				background,
+				width,
+				height,
+				data
+			}){
+				const ctx = el.getContext("2d");
+				ctx.fillStyle = background;
+				ctx.fillRect(0,0,width,height);
+				const imgData = data.slice();
+				while(imgData.length){
+					const item = imgData.shift();
+					ctx.drawImage(item.el,0,0,item.width,item.height,item.left,item.top,item.width,item.height)
+					
+				}
+				return el;
+			}
+			function defineReactive(obj,key,val,notice){
+				Object.defineProperty(obj,key,{
+					get:function(){
+						return val;
+					},
+					set:function(nvl){
+						val = nvl;
+						if(notice){
+							notice(val)
+						}
+					}
+				})
+			}
+			function fileToBase64(file){
+				return new Promise((resolve)=>{
+					const reader = new FileReader();
+					reader.onload = function(e){
+						resolve(e.target.result)
+					};
+					reader.readAsDataURL(file);
+				})
+				
+			}
+			function createHtmlFragment(val,imgName,ispeople){
+				let checked = '';
+				if(ispeople){
+					checked = 'checked="true"'
+				}
+				return `<div class="set-size-container">
+					<div class="set-size-head">
+						图层信息
+						<span data-type='delete'></span>
+					</div>
+					<div class="set-layer-name">
+						图片名称：${imgName}
+					</div>
+					<div class="set-size-content">
+						<div class="set-size-add" data-type='add'></div>
+						<div class="set-size-block">${val}</div>
+						<div class="set-size-reduce" data-type='reduce'></div>
+					</div>
+					<div class="set-position-content">
+						<div class="set-position-xy">
+							<label>x:</label>
+							<input type="number" data-type='x' value="0" min="0"/>
+							<label>y:</label>
+							<input type="number" data-type='y' value="0" min="0"/>
+						</div>
+						<div class="set-position-container">
+							<div class="create-img-btn"  data-type='setxy'>根据xy坐标调整位置</div>
+						</div>
+					</div>
+					<div class="set-layer-attribute">
+						<label>是否为人像层：</label>
+						<input type="checkbox" data-type="ispeople" ${checked}/>
+					</div>
+				</div>`
+			}
+			class RemovableLayer{
+				constructor({
+					el,
+					left,
+					top,
+					width,
+					height,
+					parentHeight,
+					parentWidth,
+					check
+				}) {
+				    this.el = typeof(el) === 'string' ? document.querySelector(el) : el;
+					this.left = left;
+					this.top = top;
+					this.minLeft = 0;
+					this.minTop = 0;
+					this.parentHeight = parentHeight;
+					this.parentWidth = parentWidth;
+					this.canMove = false;
+					this.el.addEventListener("mousedown",(e)=>this.mousedown(e));
+					this.el.addEventListener("mousemove",(e)=>this.mousemove(e));
+					document.addEventListener("mouseup",(e)=>this.mouseup(e));
+					this.el.addEventListener("dblclick",(e)=>this.select(e));
+					this.startX = 0;
+					this.startY = 0;
+					this.height = height;
+					this.width = width;
+					this.maxTop = this.parentHeight - this.height;
+					this.maxLeft = this.parentWidth - this.width;
+					this.checked = false;
+					this.check = check;
+					this.setPosition(this.left,this.top);
+				}
+				setBoundary(){
+	
+				}
+				resize(width,height){
+					if(this.width<10)return;
+					this.width -= width;
+					this.setWidth(this.width);
+					console.log(width)
+				}
+				select(e){
+					this.checked = !this.checked;
+					this.el.classList.toggle("canvas-layer-selected");
+					if(this.check){
+						this.check(this.checked)
+					}
+				}
+				blur(){
+					this.checked = !this.checked;
+					this.el.classList.remove("canvas-layer-selected");
+				}
+				mousedown(e){
+					this.canMove = true;
+					this.startX = e.pageX;
+					this.startY = e.pageY;
+					console.log();
+				}
+				mousemove(e){
+					if(!this.canMove)return;
+					this.left += (e.pageX - this.startX);
+					this.top += (e.pageY - this.startY);
+					this.setPosition(this.left,this.top);
+					this.startX = e.pageX;
+					this.startY = e.pageY
+					e.preventDefault();
+					
+				}
+				mouseup(e){
+					this.canMove = false;
+				}
+				setPosition(){
+					this.left = Math.max(this.minLeft,this.left);
+					this.left = Math.min(this.maxLeft,this.left);
+					this.top = Math.max(this.minTop,this.top);
+					this.top = Math.min(this.maxTop,this.top);
+					this.el.style.transform = `translate3d(${this.left}px, ${this.top}px, 0px)`;
+				}
+				setWidth(width){
+					this.el.style.width = width + 'px';
+				}
+				setzIndex(index){
+					this.zIndex = index;
+					this.el.style.zIndex = index;
+				}
+				handDo(distance,type){
+					if(type === 'x'){
+						this.left += distance;
+					}
+					if(type === 'y'){
+						this.top += distance;
+					}
+					this.setPosition();
+				}
+				moveTo(x,y){
+					x = parseInt(x);
+					y = parseInt(y);
+					if(x !== x || y !== y)return;
+					this.left = x;
+					this.top = y;
+					this.setPosition();
+				}
+			}
+			class Stack{
+				constructor(){
+					this.list = [];
+					this.maxLength = 4;
+				}
+				add(item){
+					if(this.list.length === this.maxLength)return;
+					item.setzIndex(this.list.length);
+					this.list.push(item);
+				}
+				forward(item){
+					const list = this.list;
+					const index = list.indexOf(item);
+					if(list.length<2)return;
+					if(index<0)return;
+					if(index === list.length-1)return;
+					list.splice(index,1);
+					list.splice(index+1,0,item);
+					this.resetZindex();
+				}
+				backoff(item){
+					const list = this.list;
+					const index = list.indexOf(item);
+					if(list.length<2)return;
+					if(index<1)return;
+					if(index === list.length)return;
+					list.splice(index,1);
+					list.splice(index-1,0,item);
+					this.resetZindex();
+				}
+				deleteItem(item){
+					const index = this.list.indexOf(item);
+					if(index>-1){
+						this.list.splice(index,1);
+						this.resetZindex();
+					}
+				}
+				resetZindex(){
+					this.list.forEach((item,index)=>{
+						item.setzIndex(index)
+					});
+				}
+			}
+			function createRGB(rgb){
+				return 'rgb('+rgb[0]+','+rgb[1]+','+rgb[2]+')';
+			}
+			function createRemovableLayer(el,width,height){
+				const canvasSize = currentData.canvasSize;
+				return new RemovableLayer({
+					el:el,
+					left:0,
+					top:0,
+					width,
+					height,
+					parentHeight:canvasSize.height,
+					parentWidth:canvasSize.width,
+					check(checked){
+						if(checked){
+							if(currentData.varRemovableLayer){
+								currentData.varRemovableLayer.blur();
+							}
+							currentData.varRemovableLayer = this;
+						}else{
+							currentData.varRemovableLayer = null;
+						}
+					}
+				})
+			}
+			/* 初始化数据 */
+			const currentData = {
+				thresholdValue:1,
+				rgb:[240,240,240],
+				canvasSize:{
+					width:720,
+					height:1080
+				},
+				Images:[],
+				varRemovableLayer:null
+			}
+			const stack = new Stack();
+			defineReactive(currentData,'varRemovableLayer',null,function(obj){
+				console.log(obj)
+				if(obj){
+					currentLayerContainer.innerHTML = createHtmlFragment(obj.zIndex,obj.imgName,obj.isPeople)
+				}else{
+					currentLayerContainer.innerHTML = '';
+				}
+			})
+			let canCreate = true;
+			/* 生成画布的操做 */
+			const createCanvas = document.getElementById("createCanvas");
+			const resetCanvas = document.getElementById("resetCanvas");
+			const layerRgbContainer = document.getElementById("layerRgbContainer");
+			const blockRgbContainer = document.getElementById("blockRgbContainer");
+			const inputList = layerRgbContainer.getElementsByTagName("input");
+			const canvasHeight = document.getElementById("canvasHeight");
+			const canvasWidth = document.getElementById("canvasWidth");
+			const canvasSimulation = document.getElementById("canvasSimulation");
+			layerRgbContainer.addEventListener("click",function(e){
+				const target = e.target;
+				if(target.dataset.type === 'preview'){
+					const list = inputList;
+					const rgb = [].slice.call(list).map(item=>item.value);
+					blockRgbContainer.style.background = createRGB(rgb);
+				}
+			})
+			createCanvas.addEventListener("click",function(){
+				if(!canCreate){
+					alert("您已生成画布，次过程中不允许中途再次操做，如需重新生成，请重置画布");
+					return;
+				}
+				const rgb = [].slice.call(inputList).map(item=>item.value);
+				console.log(rgb)
+				currentData.rgb = rgb;
+				currentData.canvasSize.width = canvasWidth.value;
+				currentData.canvasSize.height = canvasHeight.value;
+				canvasSimulation.style.background = createRGB(rgb);
+				canvasSimulation.style.width = canvasWidth.value + 'px';
+				canvasSimulation.style.height = canvasHeight.value + 'px';
+			})
+			resetCanvas.addEventListener("click",function(){
+				const result = confirm("您将重置画布");
+				if(result){
+					window.location.reload();
+				}
+			})
+			/* 调整图层的操做 */
+			const thresholdAdd = document.getElementById("thresholdAdd");
+			const thresholdReduce = document.getElementById("thresholdReduce");
+			const thresholdValue = document.getElementById("thresholdValue");
+			const addImgToCanvas = document.getElementById("addImgToCanvas");
+			const uploadControl = document.getElementById("uploadControl");
+			thresholdAdd.addEventListener("click",function(){
+				if(currentData.thresholdValue>=17)return;
+				currentData.thresholdValue += 2;
+				thresholdValue.innerHTML = currentData.thresholdValue;
+			})
+			thresholdReduce.addEventListener("click",function(){
+				if(currentData.thresholdValue<2)return;
+				currentData.thresholdValue -= 2;
+				thresholdValue.innerHTML = currentData.thresholdValue;
+			})
+			//获取本地图片
+			uploadControl.addEventListener("change",function(e){
+				if(stack.list.length>=4){
+					alert("最多只能只能由4个图层");
+					target.value = '';
+					return;
+				}
+				const target = e.target;
+				const file = target.files[0];
+				console.log(file)
+				fileToBase64(file).then(base64=>{
+					target.value = '';
+					const Img = document.createElement("img");
+					Img.src = base64;
+					const image = new Image();
+					image.src = base64;
+					const onloadfn = function(){
+						const {width,height} = currentData.canvasSize;
+						if(this.width>width || this.height>height){
+							alert("不允许图层宽高大于画布宽高");
+							return;
+						}
+						canvasSimulation.appendChild(Img);
+						const removableLayer = createRemovableLayer(Img,this.width,this.height);
+						removableLayer.imgName = file.name;
+						stack.add(removableLayer);
+						canCreate = false;
+					}
+					image.addEventListener("load",onloadfn)
+					
+					
+				})
+			})
+			
+			document.onkeyup = function(e){
+				const varRemovableLayer = currentData.varRemovableLayer;
+				if(varRemovableLayer){
+					e.preventDefault();
+					let distance = 0;
+					let direction = 'x';
+					const val = currentData.thresholdValue;
+					switch (e.keyCode){
+						case 38:
+							distance = -val;
+							direction = 'y';
+							break;
+						case 37:
+							distance = -val;
+							break;
+						case 40:
+							distance = val;
+							direction = 'y';
+							break;
+						case 39:
+							distance = val;
+						break;
+					}
+					varRemovableLayer.handDo(distance,direction);
+					
+				}
+				
+			}
+			/* 操做图层层级 */
+
+			const currentLayerContainer = document.getElementById("currentLayerContainer");
+			currentLayerContainer.addEventListener("click",function(e){
+				
+				const target = e.target;
+				const varRemovableLayer = currentData.varRemovableLayer;
+				if(!varRemovableLayer)return;
+				if(target.dataset.type === 'delete'){
+					this.innerHTML = '';
+					stack.deleteItem(varRemovableLayer);
+					const el = varRemovableLayer.el;
+					el.parentNode.removeChild(el);
+					currentData.varRemovableLayer = null;
+					return;
+				}
+				if(target.dataset.type === 'add'){
+					const sizeBlock = this.querySelector(".set-size-block");
+					stack.forward(varRemovableLayer);
+					sizeBlock.innerHTML = varRemovableLayer.zIndex;
+					return;
+				}
+				if(target.dataset.type === 'reduce'){
+					const sizeBlock = this.querySelector(".set-size-block");
+					stack.backoff(varRemovableLayer);
+					sizeBlock.innerHTML = varRemovableLayer.zIndex;
+					return;
+				}
+				if(target.dataset.type === 'setxy'){
+					const x = this.querySelector("[data-type='x']").value;
+					const y = this.querySelector("[data-type='y']").value;
+					varRemovableLayer.moveTo(x,y);
+				}
+				if(target.dataset.type === 'ispeople'){
+					varRemovableLayer.isPeople = target.checked;
+				}
+			})
+			/* 最后 */
+			const submitSave = document.getElementById("submitSave");
+			const previewBlockImg = document.getElementById("previewBlockImg");
+			const createImgBlockPopup = document.querySelector("#createImgBlockPopup");
+			const blockCanvasContent = document.querySelector("#blockCanvasContent");
+			submitSave.addEventListener("click",function(){
+				console.log(stack);
+				console.log(currentData);
+				if(!stack.list.length){
+					alert("请上传图层");
+					return;
+				}
+				if(stack.list.some(item=>item.isPeople === undefined)){
+					alert("您必须设置每一层图层是否为人像层");
+					return;
+				}
+				const {height,width} = currentData.canvasSize;
+				const el = document.createElement("canvas");
+				el.height = height;
+				el.width = width;
+				document.body.appendChild(el);
+				createImgByCanvas({
+					el,
+					width:width,
+					height:height,
+					background:createRGB(currentData.rgb),
+					data:stack.list
+				})
+				console.log(el.toDataURL("image/png"))
+			})
+			previewBlockImg.addEventListener("click",function(){
+				const {height,width} = currentData.canvasSize;
+				const el = document.createElement("canvas");
+				el.height = height;
+				el.width = width;
+				createImgByCanvas({
+					el,
+					width:width,
+					height:height,
+					background:createRGB(currentData.rgb),
+					data:stack.list
+				})
+				blockCanvasContent.src = el.toDataURL("image/png");
+				createImgBlockPopup.classList.add('create-img-block-popupoff');
+			})
+			
+			createImgBlockPopup.addEventListener("click",function(e){
+				const target = e.target;
+				if(target.dataset.type === 'close'){
+					createImgBlockPopup.classList.remove('create-img-block-popupoff')
+				}
+			})
+		</script>
+	</body>
+</html>
+<script>
+
+	
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+	class Resizing{
+		constructor(width,height,left,top,parent){
+			this.width = width;
+			this.height = height;
+			this.left = left;
+			this.top = top;
+			this.parent = parent;
+			this.benchmarkSize = 12;
+			this.canMove = false;
+			this.startX = 0;
+			this.startY = 0;
+			this.createSpot();
+			this.setCommon();
+			this.initLine();
+			this.leftBlock.addEventListener("mousedown",(e)=>this.mousedown(e,'left'));
+			this.leftBlock.addEventListener("mousemove",(e)=>this.mousemove(e,'left'));
+			document.addEventListener("mouseup",(e)=>this.mouseup(e,'left'));
+		}
+		mousedown(e){
+			this.canMove = true;
+			this.startX = e.pageX;
+			this.startY = e.pageY;
+		}
+		mousemove(e,type){
+			if(!this.canMove)return;
+			const differenceX = e.pageX - this.startX;
+			this.left += differenceX;
+			//this.top += (e.pageY - this.startY);
+			if(type === 'left'){
+				this.left = Math.min(this.left,)
+				this.setLeftBlockLeft(this.left,function(){
+					this.parent.resize(differenceX)
+				})
+			}
+			this.startX = e.pageX;
+			//this.startY = e.pageY
+		}
+		mouseup(){
+			this.canMove = false;
+			console.log("嘿嘿 ")
+		}
+		reset(left,top){
+			this.left = left;
+			this.top = top;
+			this.initLine();
+			
+		}
+		initLine(){
+			this.setInitialPosition();
+			this.minLeft = this.left - this.benchmarkSize/2;
+			this.maxLeft = this.left + this.width -(this.benchmarkSize/2);
+			this.setLeftBlockLeft(this.minLeft);//左边
+			this.setRightBlocklLeft(this.maxLeft);//右边
+			this.minTop = this.top - this.benchmarkSize/2;
+			this.maxTop = this.top + this.height - (this.benchmarkSize/2);
+			this.setTopBlockTop(this.minTop);//上边
+			this.setBottomBlockTop(this.maxTop);//上边
+		}
+		setTopBlockTop(top){
+			this.topBlock.style.top = top + 'px';
+		}
+		setBottomBlockTop(top){
+			this.bottomBlock.style.top = top + 'px';
+		}
+		setRightBlocklLeft(left){
+			this.rightBlock.style.left = left + 'px';
+		}
+		setLeftBlockLeft(left,fn){
+			this.leftBlock.style.left = left + 'px';
+			if(fn){
+				fn.call(this);
+			}
+		}
+		setInitialPosition(){
+			this.topBlock.style.left = this.left + this.width/2 -(this.benchmarkSize/2) + 'px';
+			this.bottomBlock.style.left = this.left + this.width/2 -(this.benchmarkSize/2) + 'px';
+			this.rightBlock.style.top = this.top + this.height/2 -(this.benchmarkSize/2) + 'px';
+			this.leftBlock.style.top = this.top + this.height/2 -(this.benchmarkSize/2) + 'px';
+		}
+		createSpot(){
+			this.topBlock = document.createElement("div");
+			this.bottomBlock = document.createElement("div");
+			this.leftBlock = document.createElement("div");
+			this.rightBlock = document.createElement("div");
+			this.parent.el.parentNode.appendChild(this.topBlock);
+			this.parent.el.parentNode.appendChild(this.bottomBlock);
+			this.parent.el.parentNode.appendChild(this.leftBlock);
+			this.parent.el.parentNode.appendChild(this.rightBlock);
+		}
+		setCommon(){
+			this.topBlock.classList.add("resizing-spot-vertical");
+			this.topBlock.style.cursor = 's-resize';
+			this.bottomBlock.classList.add("resizing-spot-vertical");
+			this.bottomBlock.style.cursor = 's-resize';
+			this.leftBlock.classList.add("resizing-spot-horizontal");
+			this.leftBlock.style.cursor = 'w-resize';
+			this.rightBlock.classList.add("resizing-spot-horizontal");
+			this.rightBlock.style.cursor = 'w-resize';
+		}
+		destroy(){
+			this.parent.el.parentNode.removeChild(this.topBlock);
+			this.parent.el.parentNode.removeChild(this.bottomBlock);
+			this.parent.el.parentNode.removeChild(this.leftBlock);
+			this.parent.el.parentNode.removeChild(this.rightBlock);
+		}
+	}
+</script>
