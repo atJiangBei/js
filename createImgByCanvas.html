@@ -311,7 +311,7 @@
 				width: 100%;
 				height: 100%;
 				display: flex;
-				justify-content: center;
+				justify-content: space-around;
 				align-items: center;
 				background: rgba(0,0,0,0.3);
 				transform: scale(0);
@@ -423,9 +423,34 @@
 			<div class="create-img-block-popup" id="createImgBlockPopup">
 				<span data-type="close"></span>
 				<img src="" id="blockCanvasContent"/>
+				<img src="" id="blockPeopleCanvasContent"/>
 			</div>
 		</div>
 		<script>
+			function upLoaderPost({
+				url,
+				data
+			}){
+				let res,rej;
+				const pro = new Promise((resolve,reject)=>(res = resolve,rej = reject))
+				const xhr = new XMLHttpRequest();
+				// xhr.onreadystatechange = function() {
+				// 	if (xhr.readyState == 4 ) {
+				// 		if (xhr.status == 200) {
+				// 			console.log()
+				// 		}
+				// 	}
+				// }
+				xhr.onerror = function() {
+					rej();
+				}
+				xhr.onload = function(e) {
+					res(e.target.responseText);
+				}
+				xhr.open('POST', url);
+				xhr.send(data);
+				return pro;
+			}
 			function createImgByCanvas({
 				el,
 				background,
@@ -533,6 +558,7 @@
 					this.maxLeft = this.parentWidth - this.width;
 					this.checked = false;
 					this.check = check;
+					this.isPeople = false;
 					this.setPosition(this.left,this.top);
 				}
 				setBoundary(){
@@ -845,6 +871,15 @@
 				}
 				if(target.dataset.type === 'ispeople'){
 					varRemovableLayer.isPeople = target.checked;
+					if(target.checked){
+						const arr = stack.list.filter(item=>item.isPeople);
+						if(arr.length>1){
+							target.checked = false;
+							varRemovableLayer.isPeople = false;
+							alert("每个画布只允许存在一个人像层");
+						}
+					}
+					
 				}
 			})
 			/* 最后 */
@@ -852,29 +887,84 @@
 			const previewBlockImg = document.getElementById("previewBlockImg");
 			const createImgBlockPopup = document.querySelector("#createImgBlockPopup");
 			const blockCanvasContent = document.querySelector("#blockCanvasContent");
+			const blockPeopleCanvasContent = document.querySelector("#blockPeopleCanvasContent");
+			
+			let clickFlag = true;
 			submitSave.addEventListener("click",function(){
 				console.log(stack);
 				console.log(currentData);
+				if(!clickFlag)return;
+				let imgData = stack.list;
+				const {height,width} = currentData.canvasSize;
 				if(!stack.list.length){
 					alert("请上传图层");
 					return;
 				}
-				if(stack.list.some(item=>item.isPeople === undefined)){
-					alert("您必须设置每一层图层是否为人像层");
+				if(!stack.list.some(item=>!!item.isPeople)){
+					alert("必须有一个图层被设置为人像层");
 					return;
 				}
-				const {height,width} = currentData.canvasSize;
+				if(!imgData.some(img=>img.top===0)){
+					if(confirm("必须有一个图层在最上侧")){
+						return;
+					}
+				}
+				if(!imgData.some(img=>img.left===0)){
+					if(confirm("必须有一个图层在最左侧")){
+						return;
+					}
+				}
+				if(!imgData.some(img=>{
+					return (Number(width) === img.width+img.left)
+				})){
+					if(confirm("必须有一个图层在最右侧")){
+						return;
+					}
+				}
+				if(!imgData.some(img=>{
+					return (Number(height) === img.height+img.top)
+				})){
+					if(confirm("必须有一个图层在最下侧")){
+						return;
+					}
+				}
+				clickFlag = false;
+				
 				const el = document.createElement("canvas");
 				el.height = height;
 				el.width = width;
-				document.body.appendChild(el);
 				createImgByCanvas({
 					el,
 					width:width,
 					height:height,
 					background:createRGB(currentData.rgb),
 					data:stack.list
-				})
+				});
+				const hasLength = imgData.length;
+				imgData = imgData.filter(img=>!img.src);
+				const fn = function(){
+					const promies = [];
+					
+					for(let i=0;i<imgData.length;i++){
+						const img = imgData[i];
+						let newPro = upLoaderPost("///",{
+							base64:img.src
+						}).then((src)=>{
+							img.src = src;
+						})
+						promies.push(newPro);
+					}
+					Promise.allSettled(promies).then(()=>{
+						imgData = imgData.filter(img=>!img.src);
+						if(imgData.length > 0){
+							fn();
+						}else{
+							clickFlag = true;
+							console.log(stack.list)
+						}
+					})
+				};
+				fn();
 				console.log(el.toDataURL("image/png"))
 			})
 			previewBlockImg.addEventListener("click",function(){
@@ -890,6 +980,10 @@
 					data:stack.list
 				})
 				blockCanvasContent.src = el.toDataURL("image/png");
+				const list = stack.list.filter(item=>item.isPeople);
+				if(list.length){
+					blockPeopleCanvasContent.src = list[0].el.src;
+				}
 				createImgBlockPopup.classList.add('create-img-block-popupoff');
 			})
 			
@@ -902,145 +996,7 @@
 		</script>
 	</body>
 </html>
-<script>
-
-	
-</script>
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-	class Resizing{
-		constructor(width,height,left,top,parent){
-			this.width = width;
-			this.height = height;
-			this.left = left;
-			this.top = top;
-			this.parent = parent;
-			this.benchmarkSize = 12;
-			this.canMove = false;
-			this.startX = 0;
-			this.startY = 0;
-			this.createSpot();
-			this.setCommon();
-			this.initLine();
-			this.leftBlock.addEventListener("mousedown",(e)=>this.mousedown(e,'left'));
-			this.leftBlock.addEventListener("mousemove",(e)=>this.mousemove(e,'left'));
-			document.addEventListener("mouseup",(e)=>this.mouseup(e,'left'));
-		}
-		mousedown(e){
-			this.canMove = true;
-			this.startX = e.pageX;
-			this.startY = e.pageY;
-		}
-		mousemove(e,type){
-			if(!this.canMove)return;
-			const differenceX = e.pageX - this.startX;
-			this.left += differenceX;
-			//this.top += (e.pageY - this.startY);
-			if(type === 'left'){
-				this.left = Math.min(this.left,)
-				this.setLeftBlockLeft(this.left,function(){
-					this.parent.resize(differenceX)
-				})
-			}
-			this.startX = e.pageX;
-			//this.startY = e.pageY
-		}
-		mouseup(){
-			this.canMove = false;
-			console.log("嘿嘿 ")
-		}
-		reset(left,top){
-			this.left = left;
-			this.top = top;
-			this.initLine();
-			
-		}
-		initLine(){
-			this.setInitialPosition();
-			this.minLeft = this.left - this.benchmarkSize/2;
-			this.maxLeft = this.left + this.width -(this.benchmarkSize/2);
-			this.setLeftBlockLeft(this.minLeft);//左边
-			this.setRightBlocklLeft(this.maxLeft);//右边
-			this.minTop = this.top - this.benchmarkSize/2;
-			this.maxTop = this.top + this.height - (this.benchmarkSize/2);
-			this.setTopBlockTop(this.minTop);//上边
-			this.setBottomBlockTop(this.maxTop);//上边
-		}
-		setTopBlockTop(top){
-			this.topBlock.style.top = top + 'px';
-		}
-		setBottomBlockTop(top){
-			this.bottomBlock.style.top = top + 'px';
-		}
-		setRightBlocklLeft(left){
-			this.rightBlock.style.left = left + 'px';
-		}
-		setLeftBlockLeft(left,fn){
-			this.leftBlock.style.left = left + 'px';
-			if(fn){
-				fn.call(this);
-			}
-		}
-		setInitialPosition(){
-			this.topBlock.style.left = this.left + this.width/2 -(this.benchmarkSize/2) + 'px';
-			this.bottomBlock.style.left = this.left + this.width/2 -(this.benchmarkSize/2) + 'px';
-			this.rightBlock.style.top = this.top + this.height/2 -(this.benchmarkSize/2) + 'px';
-			this.leftBlock.style.top = this.top + this.height/2 -(this.benchmarkSize/2) + 'px';
-		}
-		createSpot(){
-			this.topBlock = document.createElement("div");
-			this.bottomBlock = document.createElement("div");
-			this.leftBlock = document.createElement("div");
-			this.rightBlock = document.createElement("div");
-			this.parent.el.parentNode.appendChild(this.topBlock);
-			this.parent.el.parentNode.appendChild(this.bottomBlock);
-			this.parent.el.parentNode.appendChild(this.leftBlock);
-			this.parent.el.parentNode.appendChild(this.rightBlock);
-		}
-		setCommon(){
-			this.topBlock.classList.add("resizing-spot-vertical");
-			this.topBlock.style.cursor = 's-resize';
-			this.bottomBlock.classList.add("resizing-spot-vertical");
-			this.bottomBlock.style.cursor = 's-resize';
-			this.leftBlock.classList.add("resizing-spot-horizontal");
-			this.leftBlock.style.cursor = 'w-resize';
-			this.rightBlock.classList.add("resizing-spot-horizontal");
-			this.rightBlock.style.cursor = 'w-resize';
-		}
-		destroy(){
-			this.parent.el.parentNode.removeChild(this.topBlock);
-			this.parent.el.parentNode.removeChild(this.bottomBlock);
-			this.parent.el.parentNode.removeChild(this.leftBlock);
-			this.parent.el.parentNode.removeChild(this.rightBlock);
-		}
-	}
-</script>

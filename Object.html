@@ -10,7 +10,7 @@
 <script>
 	var obj = {};
 	Object.defineProperty(obj,"age",{
-		configurable:false,
+		configurable:true,
 	})
 	Object.defineProperty(obj,"age",{
 		value: 42,
@@ -19,5 +19,21 @@
 	obj.age =2
 	
 	
-	console.log(obj)
+	//console.log(obj)
+</script>
+<script>
+	const a = {name:'a'};
+	const b = Object.create(a,{
+		b:{
+			value:'b',
+			configurable:true,
+			enumerable:true
+		}
+	});
+	for(let k in b){
+		console.log(k)
+	}
+	b.b = 'c'
+	console.log(b,Object.keys(b));
+	console.log(Object.getOwnPropertyDescriptor(b,'b'))
 </script>

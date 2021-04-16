@@ -25,5 +25,55 @@
 		}
 	}
 	
-	b.con.bind(window)(1,2,3)
+	b.con.bind(window)(1,2,3);
+	
+	const vm = [1,2,3,4];
+	const prototypeMethods = Array.prototype;
+	const protoMethods = Object.create(prototypeMethods);
+	const methods = ["push"];
+	methods.forEach(method=>{
+		protoMethods[method] = function(){
+			console.log(method);
+			return prototypeMethods[method].apply(this,arguments)
+		}
+	})
+	vm.__proto__ = protoMethods;
+	vm.push(5);
+	console.log(vm)
+	
+	let stack = [];
+	let flag = true;
+	function nextTick(fn){
+		let res = null;
+		let p = new Promise((resolve)=>res=resolve,)
+		if(fn){
+			stack.push(fn);
+		}else{
+			fn = ()=>{
+				res()
+			}
+			stack.push(fn);
+		}
+		
+		if(flag){
+			flag = false;
+			Promise.resolve().then(resolve)
+		}
+		return p;
+	}
+	function resolve(){
+		const arr = stack.slice();
+		stack = [];
+		arr.forEach(fn=>fn());
+		flag = true;
+	}
+	nextTick(()=>{
+		console.log(1)
+	})
+	nextTick(()=>{
+		console.log(2)
+	})
+	nextTick().then(()=>{
+		console.log(3)
+	})
 </script>

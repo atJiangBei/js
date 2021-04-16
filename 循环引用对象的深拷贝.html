@@ -8,90 +8,27 @@
 	</body>
 </html>
 <script>
-	// const a = {
-	// 	name:"a"
-	// }
-	// const  b = a;
-	// a.b = b;
-	// console.log(a)
-	
-	// const  copy = (obj)=>{
-	// 	const newObj = {}; 
-	// 	const m = new Map();
-	// 	const root = Symbol("root");
-	// 	m.set(root,obj);
-	// 	for(let k in obj){
-	// 		if(typeof obj[k] !== 'object'){
-	// 			newObj[k] = obj[k]
-	// 		}else{
-	// 			if(m.get(newObj[k])){
-	// 				newObj[k] = newObj[k]
-	// 			}else{
-					
-	// 			}
-	// 		}
-	// 	}
-	// }
-	
-	// console.log(copy(a))
-	// function deepCopy3(obj) {
-	//     // hash表，记录所有的对象的引用关系
-	//     let map = new WeakMap();
-	//     function dp(obj) {
-	//         let result = {}
-	//         if(map.get(obj)) {
-	//             return map.get(obj);
-	//         }
-	//         map.set(obj, result);
-	// 		Object.keys(obj).forEach(key=>{
-	// 			if(typeof obj[key] === 'object') {
-	// 			    result[key] = dp(obj[key]);
-	// 			}else {
-	// 			    result[key] = obj[key];
-	// 			}
-	// 		})
-	//         return result;
-	//     }
-	//     return dp(obj);
-	// }
-	
-	// const obj= {
-	//     a: {
-	//         name: 'a'
-	//     },
-	//     b: {
-	//         name: 'b'
-	//     },
-	//     c: {
-	
-	//     }
-	// };
-	// obj.c.e = obj;
-	
-	// const copy = deepCopy3(obj);
-	// console.log(copy)
-</script>
-<script>
-	const arr = [];
-	function copy(obj){
-		if(arr.indexOf(obj)>-1){
-			console.log(222)
-			return arr[arr.indexOf(obj)]
-		}
-		let result = {};
-		arr.push(result);
-		debugger
-		Object.keys(obj).forEach(key=>{
-			if(typeof obj[key] === 'object'){
-				//console.log(key)
-				result[key] = copy(obj[key]);
-			}else{
-				result[key] = obj[key]
-			}
-		})
-		debugger
-		return result;
+
+	function deepCopy3(obj) {
+	    let map = new WeakMap();
+	    function dp(obj) {
+	        let result = {}
+	        if(map.get(obj)) {
+	            return map.get(obj);
+	        }
+	        map.set(obj, result);
+			Object.keys(obj).forEach(key=>{
+				if(typeof obj[key] === 'object') {
+				    result[key] = dp(obj[key]);
+				}else {
+				    result[key] = obj[key];
+				}
+			})
+	        return result;
+	    }
+	    return dp(obj);
 	}
+	
 	const obj= {
 	    a: {
 	        name: 'a'
@@ -103,7 +40,63 @@
 	
 	    }
 	};
-	obj.c.e = obj.a;
-	const data = copy(obj);
-	console.log(data)
+	obj.c.e = obj;
+	
+	const copy = deepCopy3(obj);
+	console.log(copy)
+</script>
+<script>
+	function typeofSelf(obj){
+		return {}.toString.call(obj)
+	}
+	
+	function copyDeep(obj){
+		const weakMap = new WeakMap();
+		function copyObj(obj){
+			if(weakMap.get(obj)){
+				return weakMap.get(obj);
+			}
+			let result = {};
+			
+			if(typeofSelf(obj) === '[object Object]'){
+				weakMap.set(obj,result);
+				Object.keys(obj).forEach(key=>{
+					if(typeof obj[key] === 'object'){
+						result[key] = copyObj(obj[key])
+					}else{
+						result[key] = obj[key];
+					}
+					
+				})
+			}else if(typeofSelf(obj) === '[object Array]'){
+				result = [];
+				weakMap.set(obj,result);
+				obj.forEach((item,index)=>{
+					if(typeof item === 'object'){
+						result[index] = copyObj(item)
+					}else{
+						result[index] = item;
+					}
+					
+				})
+			}
+			
+			return result;
+		}
+		return copyObj(obj)
+	}
+	const obj2= {
+	    a: {
+	        name: 'a'
+	    },
+	    b: {
+	        name: 'b'
+	    },
+	    c: {
+			e:[]
+	    }
+	};
+	obj2.c.e.push(obj2);
+	
+	console.log(copyDeep(obj2))
 </script>
