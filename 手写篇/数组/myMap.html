@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	Array.prototype.myMap = function(fn,thisValue){
+		thisValue = thisValue || window;
+		const arr = [];
+		for(let i=0;i<this.length;i++){
+			arr.push(fn.call(thisValue,this[i],i,this))
+		}
+		return arr;
+	}
+</script>

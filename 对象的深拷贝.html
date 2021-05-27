@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const deepCopy = (obj,map = new WeakMap)=>{
+		if(!obj || typeof obj !== 'object'){
+			return obj
+		}
+		if(map.has(obj)){
+			return map.get(obj)
+		}
+		const newObj = Array.isArray(obj)?[]:{};
+		map.set(obj,newObj)
+		Object.keys(obj).forEach(k=>{
+			newObj[k] = deepCopy(obj[k],map)
+		})
+		return newObj
+	}
+	
+	const arr = [1,2,3]
+	const arr1 = deepCopy(arr)
+	arr1.splice(3,0,4)
+	console.log(arr1,arr)
+
+	const a = {
+		b:"b",
+	}
+	const c = {
+		a
+	}
+	a.c = c
+	const a1 = deepCopy(a)
+	console.log(a1)
+</script>
