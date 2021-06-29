@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0,viewport-fit=cover">
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			li{
+				list-style: none;
+			}
+			body{
+				touch-action: none;
+			}
+			#box{
+				overflow: scroll;
+			}
+			.banner{
+				height: 200px;
+				background: royalblue;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 42px;
+				color: #fff;
+			}
+			#bodyContent{
+				position: relative;
+				width: 100%;
+				top: 0;
+				box-sizing: border-box;
+				padding-top: 50px;
+			}
+			.tab-container{
+				position: absolute;
+				top: 0;
+				width: 100%;
+				height: 50px;
+				z-index: 2;
+			}
+			#TabContent{
+				width: 100%;
+				top: 0;
+				display: flex;
+				background: #FFFFFF;
+				box-shadow: 0 0 10px #ccc;
+			}
+			#TabContent li{
+				flex: 1;
+				line-height: 50px;
+				text-align: center;
+				font-size: 20px;
+			}
+			#content{
+				text-align: center;
+				line-height: 24px;
+				background: #FFFFFF;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<div class="banner" id="banner">
+				Banner
+			</div>
+			<div class="body-content" id="bodyContent">
+				<div class="tab-container">
+					<ul id="TabContent">
+						<li>tab一</li>
+						<li>tab二</li>
+					</ul>
+				</div>
+				<ul id="content">
+					
+				</ul>
+			</div>
+		</div>
+		<script>
+			const box = document.getElementById("box");
+			const sw = window.screen.height;
+			box.style.height = sw + 'px';
+			const banner = document.getElementById("banner");
+			const bannerHeight = banner.scrollHeight;
+			const bodyContent = document.getElementById("bodyContent");
+			const contentDom = document.getElementById("content");
+			const TabContent = document.getElementById("TabContent");
+			
+			const dataArr = new Array(5000).fill(1);
+			let boxScrollTop = 0;
+			let state = "default";
+			let contentScrollTop = 0;
+			function init(arr){
+				let str = '';
+				dataArr.forEach((item,index)=>{
+					str+= `<li>${index}</li>`
+				})
+				contentDom.innerHTML = str;
+			}
+			init(dataArr)
+			function bodyContentTop(){
+				TabContent.style.position = 'fixed';
+				bodyContent.style.position = 'fixed';
+				bodyContent.style.height = '100%';
+				bodyContent.style.overflow = 'scroll';
+			}
+			function bodyContentDefault(){
+				TabContent.style.position = 'absolute';
+				bodyContent.style.position = 'relative';
+				bodyContent.style.height = 'auto';
+				bodyContent.style.overflow = 'null';
+			}
+			box.addEventListener("scroll",function(){
+				boxScrollTop = this.scrollTop;
+				if(this.scrollTop>=bannerHeight){
+					state = "top";
+					bodyContentTop();
+					
+				}
+			})
+			bodyContent.addEventListener("scroll",function(){
+				contentScrollTop = this.scrollTop;
+				const scrollHeight = this.scrollHeight;
+				if(sw+contentScrollTop>= scrollHeight-5){
+					console.log("到底了")
+				}
+			})
+			let startedY = 0;
+			let startY = 0;
+			let moveY = 0;
+			let y = 0;
+			contentDom.addEventListener("touchstart",function(e){
+				//if(state !== 'top')return;
+				//if(contentScrollTop!==0)return;
+				//console.log('start')
+				startedY = startY = e.touches[0]['clientY'];
+			})
+			contentDom.addEventListener("touchmove",function(e){
+				//if(state !== 'top')return;
+				
+				if(contentScrollTop!==0)return;
+				const targetY = e.touches[0]['clientY'];
+				moveY = targetY - startY;
+				if(moveY<0)return;
+				e.preventDefault()
+				startY = targetY;
+				y += moveY;
+				if(state === 'default'){
+					if(moveY>0){
+						y = Math.min(50,y);
+						contentDom.style.transform = `translate3d(0,${y}px,0)`;
+						contentDom.style.transition = 'none';
+					}
+					return;
+				}
+				if(moveY>0){
+					bodyContentDefault();
+					state = 'default'
+				}
+				
+			})
+			contentDom.addEventListener("touchend",function(e){
+				const endY = e.changedTouches[0].clientY;
+				//console.log(163,state)
+				if(endY-startedY>0&&state==='default'){
+					contentDom.style.transform = `translate3d(0,0,0)`;
+					contentDom.style.transition = 'all .2s';
+					setTimeout(()=>{
+						console.log("下拉刷新")
+					},200)
+				}
+				
+			})
+		</script>
+	</body>
+</html>
