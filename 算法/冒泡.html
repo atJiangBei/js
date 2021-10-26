@@ -8,43 +8,35 @@
 	</body>
 </html>
 <script>
-	const arr = [5, 3, 2, 4, 1];
-	// function bubbleSort(arr) {
-	//     const len = arr.length  
-	//     // 外层循环用于控制从头到尾的比较+交换到底有多少轮
-	//     for(let i=0;i<len;i++) {  
-	//         // 内层循环用于完成每一轮遍历过程中的重复比较+交换
-	// 		console.log(arr)
-	//         for(let j=0;j<len-1;j++) {
-	// 			console.log(arr[j],arr[j+1])
-	//             // 若相邻元素前面的数比后面的大
-	//             if(arr[j] > arr[j+1]) {  
-	//                 // 交换两者
-	//                 [arr[j], arr[j+1]] = [arr[j+1], arr[j]]
-	//             }
-	//         }
-	//     }
-	//     // 返回数组
-	//     return arr
-	// }
-	// console.log(bubbleSort(arr))
-	function betterBubbleSort(arr) {
-	    const len = arr.length  
-	    for(let i=0;i<len;i++) {
-	        // 注意差别在这行，我们对内层循环的范围作了限制
-	        for(let j=0;j<len-1-i;j++) {
-				console.log(arr[j] , arr[j+1])
-	            if(arr[j] > arr[j+1]) {
-					//console.log(arr)
-	                [arr[j], arr[j+1]] = [arr[j+1], arr[j]]
-					//console.log(arr)
-	            }
-	        }
+	var arr = [5,9,8,6,3,1,2,7]
+	//第一次arr-> 5,8,6,3,1,2,7,9
+	//arr-> 5,6,3,1,2,7,8,9
+	//arr-> 5,3,1,2,6,7,8,9
+	//arr-> 3,1,2,5,6,7,8,9
+	//arr-> 1,2,3,5,6,7,8,9
+	//arr-> 1,2,3,5,6,7,8,9//此时已经为有序，故此设置exchange变量判断直接终止
+	var exchange;//优化字段
+	for (var i = 0; i <arr.length - 1;i ++) {
+	  exchange = false;
+	  for (var j = 0; j < arr.length-1-i; j++) {
+		/*
+		此处为何为arr.length-1再减去i:
+		如上面所示数组为例，无论最大的数（9）在任何位置，经过第一轮循环之后，
+		9都会被移到最后，所以第二轮循环开始只用循环到倒数第二个就好（既为：arr.length-1-i,此时i为1）
+		*/
+	    if (arr[j] >arr[j+1]) {
+	      exchange = true;
+	     var tmp = arr[j];
+	      arr[j] = arr[j+1];
+	      arr[j+1] = tmp;
 	    }
-	    return arr
+	  }
+	  console.log("arr-> "+arr)
+	  if (!exchange) {
+	    break;
+	  }
 	}
-	console.log(betterBubbleSort(arr))
-	
+	console.log(i,arr);
 	const arr2 = [1,2,3,4];
 	for(let i=0;i<arr2.length;i++){
 		if(i === 2){

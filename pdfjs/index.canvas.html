@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="./build/pdf.js"></script>
+	</head>
+	<body>
+		
+		<canvas id="the-canvas" height="500" width="1000"></canvas>
+		<script>
+			/*
+			 //   'http://localhost:2021/pdfjs/web/viewer.html?file=http://localhost:2021/pdfjs/123.pdf&&retrieveType=EARNING&fileType=view#page=12&zoom=100,35,768',
+			*/
+			console.log(pdfjsLib)
+			pdfjsLib.GlobalWorkerOptions.workerSrc = './build/pdf.worker.js'
+			var loadingTask = pdfjsLib.getDocument('123.pdf');
+			loadingTask.promise.then(function(pdf) {
+			  console.log(pdf)
+				pdf.getPage(1).then(function(page) {
+					console.log(page)
+				  // you can now use *page* here
+				  var scale = 1.5;
+				  var viewport = page.getViewport({ scale: scale, });
+				  // Support HiDPI-screens.
+				  var outputScale = window.devicePixelRatio || 1;
+				  
+				  var canvas = document.getElementById('the-canvas');
+				  var context = canvas.getContext('2d');
+				  
+				  canvas.width = Math.floor(viewport.width * outputScale);
+				  canvas.height = Math.floor(viewport.height * outputScale);
+				  canvas.style.width = Math.floor(viewport.width) + "px";
+				  canvas.style.height =  Math.floor(viewport.height) + "px";
+				  
+				  var transform = outputScale !== 1
+				    ? [outputScale, 0, 0, outputScale, 0, 0]
+				    : null;
+				  
+				  var renderContext = {
+				    canvasContext: context,
+				    transform: transform,
+				    viewport: viewport
+				  };
+				  page.render(renderContext);
+				});
+			});
+			
+		</script>
+	</body>
+</html>

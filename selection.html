@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			#box {
+				font-size: 18px;
+				line-height: 24px;
+				display: flex;
+				flex-wrap: wrap;
+				white-space: pre-wrap;
+				text-align: left;
+			}
+			i{
+				font-style: none;
+			}
+			#box>span{
+				display: inline-flex;
+				flex-direction: column;
+				border: 3px solid #F85959;
+			}
+			#box>span>i:last-child{
+				background-color: #F85959;
+				color: #fff;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box" contentEditable>
+			我只是一段话啊，你说什么呢
+		</div>
+		<ul id="list">
+			<li>a属性</li>
+			<li>b属性</li>
+		</ul>
+		<script>
+			////document.designMode = 'on'
+			const box = document.getElementById("box")
+
+			var lastEditRange;
+			var selection;
+			document.getElementById("list").onclick = function(e) {
+
+				if (lastEditRange) {
+					console.log(123,lastEditRange)
+					const insertText = e.target.innerText
+					const {
+						startOffset,
+						endOffset,
+						startContainer,
+						endContainer
+					} = lastEditRange;
+					if (startContainer !== endContainer) return;
+					// const parentElement = startContainer.parentElement
+					// const text = parentElement.innerHTML;
+					// parentElement.innerHTML = text.substring(0, startOffset) + "<span><i>"+text.substring(startOffset,endOffset)+"</i><i>" + insertText + "</i></span>" + text.substring(endOffset)
+					// const text = startContainer.nodeValue
+					// const span = document.createElement("span");
+					// span.innerHTML = "<i>"+text.substring(startOffset,endOffset)+"</i><i>" + insertText + "</i>"
+					// console.log(span)
+					//lastEditRange.surroundContents(span)
+					const text = startContainer.nodeValue
+					startContainer.nodeValue = text.substring(0, startOffset) + "<span><i>"+text.substring(startOffset,endOffset)+"</i><i>" + insertText + "</i></span>" + text.substring(endOffset)
+					chuli(box)
+					//box.innerHTML = box.innerText
+					//console.log(text.substring(0,startContainer),)
+					//console.log(parentNode.innerText.substring(startOffset ,endOffset))
+				}
+			}
+			box.onclick = function() {
+				selection = getSelection()
+				lastEditRange = selection.getRangeAt(0)
+			}
+
+			box.onmouseup = function() {
+				selection = window.getSelection()
+				lastEditRange = selection.getRangeAt(0)
+				console.log(selection.toString())
+				console.log(lastEditRange)
+			}
+			// document.onselectstart = function(){
+			// 	console.log("start")
+			// }
+			function HTMLDecode(text) {
+			    var temp = document.createElement("div"); 
+			    temp.innerHTML = text; 
+			    var output = temp.innerText || temp.textContent; 
+			    temp = null; 
+			    return output; 
+			} 
+			function chuli(box){
+				let firstChild = box.firstChild
+				const arr = []
+				while(firstChild){
+					console.log(firstChild)
+					arr.push(firstChild)
+					box.removeChild(firstChild)
+					firstChild = box.firstChild
+				}
+				arr.forEach(dom=>{
+					if(dom.nodeType === 3){
+						box.innerHTML+=dom.textContent
+					}else{
+						box.appendChild(dom)
+					}
+				})
+			}
+
+
+			// document.onselectionchange = function(e) {
+			//   lastEditRange = window.getSelection();
+			//   ///console.log('New selection made',document.getSelection().toString());
+			//  // console.log(lastEditRange.getRangeAt(0))
+			// };
+		</script>
+	</body>
+</html>

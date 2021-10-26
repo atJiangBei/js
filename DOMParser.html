@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			#box{
+				height: 200px;
+				width: 300px;
+				border: 1px solid #007AFF;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="ceshi">
+			wer
+		</div>
+		<div id="box">我只是一段话</div>
+		<script>
+			const box = document.getElementById("box");
+			const text = box.innerText;
+			console.log(text.nodeValue);
+			//let domparser = new DOMParser()​​;
+			let domparser = new DOMParser();
+			let doc = domparser.parseFromString('哈哈哈哈哈&lt;i&gt;sacas&lt;/i&gt;', 'text/html')
+			function HTMLDecode(text) { 
+			    var temp = document.createElement("div"); 
+			    temp.innerHTML = text; 
+			    var output = temp.innerText || temp.textContent; 
+			    temp = null; 
+			    return output; 
+			} 
+			//console.log(box.innerHTML = doc.body.innerText)
+		</script>
+	</body>
+</html>

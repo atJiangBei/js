@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			.max{
+				height: 500px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			.btn{
+				position: relative;
+				display: inline-block;
+				box-sizing: border-box;
+				font-size: 14px;
+				background: #fff;
+				text-align: center;
+				cursor: pointer;
+				position: relative;
+				background: #fff;
+				border: 0;
+				border: 1px solid #f0a020;
+				border-radius: 3px;
+			}
+			.text{
+				position: relative;
+				z-index: 5;
+				height: 44px;
+				line-height: 44px;
+				width: 60px;
+				border-radius: 3px;
+			}
+			.bg{
+				border-radius: 3px;
+				position: absolute;
+				left: 0;
+				top: 0;
+				height: 44px;
+				line-height: 44px;
+				width: 60px;
+				animation-iteration-count: 1;
+				animation-duration: 0.6s;
+				animation-timing-function: cubic-bezier(0, 0, 0.2, 1), cubic-bezier(0, 0, 0.2, 1);
+			}
+			@keyframes button-wave-opacity{
+			    from{
+			      opacity:0.6;
+			    }
+			    to{
+			      opacity: 0
+			    }
+			  }
+			@keyframes button-wave-spread{
+			    from{
+					box-shadow: 0 0 0.5px 0 #f0a020;
+			    }
+			    to{
+					box-shadow: 0 0 0.5px 7.5px  #f0a020;
+			    }
+			}
+			.active{
+				animation-name: button-wave-spread,button-wave-opacity;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="max">
+			<button class="btn" id="btn">
+				<div class="bg active" id="bg">
+					
+				</div>
+				<div class="text">
+					按钮
+				</div>
+			</button>
+		</div>
+		<script>
+			const btn = document.getElementById('btn')
+			const bg = document.getElementById('bg')
+			let timer = null;
+			btn.onclick = function(){
+				bg.classList.remove('active')
+				setTimeout(()=>{
+					bg.classList.add('active')
+				},0)
+			}
+		</script>
+	</body>
+</html>
