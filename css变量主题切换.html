@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			:root {
+				--font-orange: #fc8452;
+				--font-blue:#007AFF;
+				--font-red:#ee6666;
+				--font-yellow:#fac858;
+				--font-white:#fff;
+				--font-black:#333;
+			}
+			button{
+				outline: none;
+				border: none;
+				padding: 10px;
+				border-radius: 3px;
+				cursor: pointer;
+			}
+			button:active{
+				opacity: 0.7;
+			}
+			button.dark{
+				background:var(--font-black);
+				color:var(--font-white);
+				border:1px solid var(--font-black);
+			}
+			button.light{
+				background:var(--button-background-color);
+				color:var(--font-black);
+				border:1px solid var(--font-black);
+			}
+			.tabel-container {
+				padding: 20px 20px 0;
+			}
+			.tabel-container table{
+				width: 408px;
+				text-align: center;
+				line-height: 48px;
+				border-collapse:collapse;
+				background-color: var(--background-color);
+				color: var(--font-color);
+				border-color: var(--border-color);
+			}
+		</style>
+	</head>
+	<body>
+		<div id="btn">
+			<button data-type="darkTheme" class="dark">暗黑表格</button>
+			<button data-type="lightTheme" class="light">浅色表格</button>
+		</div>
+		<div class="tabel-container" id="tabel-container">
+			<table border="1" id="table">
+				<thead>
+					<tr>
+						<td>天</td>
+						<td>地</td>
+						<td>玄</td>
+						<td>黄</td>
+						<td>宇</td>
+						<td>宙</td>
+						<td>洪</td>
+						<td>荒</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>天</td>
+						<td>地</td>
+						<td>玄</td>
+						<td>黄</td>
+						<td>宇</td>
+						<td>宙</td>
+						<td>洪</td>
+						<td>荒</td>
+					</tr>
+					<tr>
+						<td>天</td>
+						<td>地</td>
+						<td>玄</td>
+						<td>黄</td>
+						<td>宇</td>
+						<td>宙</td>
+						<td>洪</td>
+						<td>荒</td>
+					</tr>
+					<tr>
+						<td>天</td>
+						<td>地</td>
+						<td>玄</td>
+						<td>黄</td>
+						<td>宇</td>
+						<td>宙</td>
+						<td>洪</td>
+						<td>荒</td>
+					</tr>
+					<tr>
+						<td>天</td>
+						<td>地</td>
+						<td>玄</td>
+						<td>黄</td>
+						<td>宇</td>
+						<td>宙</td>
+						<td>洪</td>
+						<td>荒</td>
+					</tr>
+					<tr>
+						<td>天</td>
+						<td>地</td>
+						<td>玄</td>
+						<td>黄</td>
+						<td>宇</td>
+						<td>宙</td>
+						<td>洪</td>
+						<td>荒</td>
+					</tr>
+					<tr>
+						<td>天</td>
+						<td>地</td>
+						<td>玄</td>
+						<td>黄</td>
+						<td>宇</td>
+						<td>宙</td>
+						<td>洪</td>
+						<td>荒</td>
+					</tr>
+					<tr>
+						<td>天</td>
+						<td>地</td>
+						<td>玄</td>
+						<td>黄</td>
+						<td>宇</td>
+						<td>宙</td>
+						<td>洪</td>
+						<td>荒</td>
+					</tr>
+					
+				</tbody>
+			</table>
+		</div>
+		<script>
+			const btn = document.querySelector("#btn");
+			const themeTypeKey = 'themeTypeKey'
+			const tableContainer = document.querySelector("#tabel-container");
+			const themeOption = {
+				darkTheme : {
+					"--font-color": "#fff",
+					"--background-color":"#000",
+					"--border-color":"#fff",
+				},
+				lightTheme : {
+					"--font-color": "#3C7A03",
+					"--background-color":"#FFFAE8",
+					"--border-color":"#F8DE80",
+				}
+			}
+
+			const initTheme = (themeType)=>{
+				//darkTheme
+				let currentType = themeType
+				if(!themeType){
+					currentType = getThemeType();
+				}
+				setThemeType(currentType)
+				const currentThemeConfig = themeOption[currentType]
+				Object.entries(currentThemeConfig).forEach(([k,v])=>{
+					tableContainer.style.setProperty(k, v);
+				})
+			}
+			
+			initTheme()
+			btn.addEventListener('click',function(event){
+				const { type } = event.target.dataset
+				initTheme(type)
+			})
+	
+			function getThemeType(){
+				return window.localStorage.getItem(themeTypeKey) || 'darkTheme'
+			}
+			function setThemeType(type){
+				window.localStorage.setItem(themeTypeKey,type)
+			}
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	/*
+	https://leetcode-cn.com/problems/add-two-numbers/
+	*/
+	function ListNode(val, next) {
+		this.val = (val === undefined ? 0 : val)
+		this.next = (next === undefined ? null : next)
+	}
+	const l1 = {
+		val: 2,
+		next: {
+			val: 4,
+			next: {
+				val: 3
+			}
+		}
+	};
+	const l2 = {
+		val: 5,
+		next: {
+			val: 6,
+			next: {
+				val: 4
+			}
+		}
+	};
+	const addTwoNumbers = (l1, l2) => {
+		let newl = new ListNode();
+		let newhead = newl;
+		let temporary = 0;
+		let i = 0;
+		let head1 = l1;
+		let head2 = l2;
+		while (head1 && head2) {
+			let result = head1.val + head2.val + temporary;
+			if (result >= 10) {
+				temporary = 1;
+				result -= 10;
+			} else {
+				temporary = 0
+			}
+			newhead.val = result;
+			head1 = head1.next;
+			head2 = head2.next
+			if (head1 && head2) {
+				newhead.next = new ListNode()
+				newhead = newhead.next
+			}
+		}
+		let nrr = null
+		if (head1) {
+			nrr = head1;
+		}
+		if (head2) {
+			nrr = head2;
+		}
+		while (nrr) {
+			let r = temporary += nrr.val
+			if (r >= 10) {
+				temporary = 1;
+				r -= 10;
+			} else {
+				temporary = 0;
+			}
+			newhead.val = r;
+			nrr = nrr.next
+			if (nrr) {
+				newhead.next = new ListNode()
+				newhead = newhead.next
+			}
+		}
+
+		if (temporary > 0) {
+			newhead.next = new ListNode(temporary)
+		}
+		return newl
+	}
+	addTwoNumbers(l1, l2)
+</script>

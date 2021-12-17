@@ -44,45 +44,76 @@ class MyPromise{
 	}
 	then(resolve,reject){
 		if(this.status === "resolved"){
-			resolve(this.result)
-			return;
+			let result = resolve(this.result)
+			return new MyPromise((res,rej)=>{
+				res(result)
+			})
+		}else if(this.status === "rejected"){
+			let result = reject(this.error);
+			return new MyPromise((res,rej)=>{
+				rej(result)
+			})
+		}else{
+			let reso;
+			let reje;
+			let p = new MyPromise((res,rej)=>{
+				reso = res
+				reje = rej
+			})
+			this.resolves.push((result)=>{
+				let r = resolve(result)
+				reso(r)
+			});
+			this.rejects.push((result)=>{
+				let r = reject(result)
+				reje(r)
+			});
+			return p
 		}
-		if(this.status === "rejected"){
-			reject(this.error);
-			return;
-		}
-		this.resolves.push(resolve);
-		this.rejects.push(reject);
 	}
 }
 
 
 new MyPromise((res,rej)=>{
 	res(1)
-}).then(data=>{
-	console.log("成功",data)
+}).then(res=>{
+	console.log(res)
+	return res+1
+}).then(res=>{
+	console.log(res)
+	return res+1
+}).then(res=>{
+	console.log(res)
+	return res+1
+}).then(res=>{
+	console.log(res)
+	return res+1
 })
 
+// new MyPromise((res,rej)=>{
+//  	setTimeout(rej,1000,2)
+// }).then(res=>{
+// 	return 1
+// })
+
+// new MyPromise((res,rej)=>{
+// 	setTimeout(rej,1000,2)
+// }).then(data=>{
+// 	console.log(data)
+// },(error)=>{
+// 	console.log("失败",error)
+// })
 
 
-new MyPromise((res,rej)=>{
-	setTimeout(rej,1000,2)
-}).then(data=>{
-	console.log(data)
-},(error)=>{
-	console.log("失败",error)
-})
 
-
-
-new MyPromise((res,rej)=>{
-	throw new Error("抛出错误")
-	setTimeout(rej,2000,"error")
-}).then(data=>{
-	console.log(data)
-},(err)=>{
-	console.log(err)
-})
+// new MyPromise((res,rej)=>{
+// 	throw new Error("抛出错误")
+// 	setTimeout(rej,2000,"error")
+// }).then(data=>{
+// 	console.log(data)
+// },(err)=>{
+// 	console.log(err)
+// })
 
 
 

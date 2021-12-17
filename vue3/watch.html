@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<button id="btn">跳转</button>
+		<script>
+			window.localStorage.setItem('vue3','vue3')
+			window.sessionStorage.setItem('vue2','vue2')
+		</script>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+	const weakMap = new WeakMap();
+	const stack = [];
+	function watch(ef){
+		try{
+			stack.push(ef)
+			ef()
+		}
+		finally{
+			stack.pop()
+		}
+	}
+</script>
+<script>
+	const souceData = {name:"小明"};
+	const data = new Proxy(souceData,{
+		get(target, propKey, receiver){
+			let map = weakMap.get(target);
+			if(!map){
+				map = {}
+				weakMap.set(target,map)
+			}
+			let set = map[propKey];
+			if(!set){
+				set = new Set();
+				map[propKey] = set
+			}
+			const ef = stack[stack.length-1]
+			if(ef){
+				set.add(ef)
+			}
+			return Reflect.get(target, propKey, receiver);
+		},
+		set(target, propKey, value, receiver){
+			const result = Reflect.set(target, propKey, value, receiver)
+			const map = weakMap.get(target);
+			if(map){
+				const set = map[propKey];
+				console.log(set)
+				if(set){
+					set.forEach(ef=>ef())
+				}
+			}
+			return result;
+		}
+	})
+	watch(function a(){
+		console.log(data.name)
+		watch(function b(){
+			console.log(data.name)
+		})
+	})
+	
+	setTimeout(()=>{
+		data.name = '大明'
+	},2000)
+</script>

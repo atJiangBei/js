@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+			// const myObj = Object.create({}, { getFoo: { value() { return this.foo; } } });
+			// myObj.foo = 'bar';
+			// console.log(Object.entries(myObj)); // [ ['foo', 'bar'] ]
+			
+			
+			// var myObject = {};
+			// //isExtensible
+			// const a = Reflect.preventExtensions(myObject) // true
+			// console.log('对象是否可以扩展',Reflect.isExtensible(myObject))
+			// Object.defineProperty(myObject,'name',{
+			// 	value:"小明"
+			// })
+			// console.log(myObject)
+			class A {
+			  a = 'a';
+			  alertA() {}
+			}
+			class B extends A {
+			  b = 'b';
+			  alertB() {}
+			}
+			
+			const b = new B();
+			
+			console.log(B.prototype);
+			
+			
+		</script>
+	</body>
+</html>
