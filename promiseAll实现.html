@@ -22,7 +22,7 @@
 		let length = promises.length
 		let al = 0;
 		return new Promise((resolve,reject)=>{
-			for(var i=0;i<length;i++){
+			for(let i=0;i<length;i++){
 				Promise.resolve(promises[i]).then(res=>{
 					result[i] = res
 					al++
