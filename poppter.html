@@ -50,9 +50,12 @@
 			console.log(current.offsetTop)
 			if(scrollParent){
 				scrollParent.addEventListener('scroll',(event)=>{
-					const distance = current.offsetTop - scrollParent.scrollTop
-					btn.style.top = distance+'px'
-					console.log(distance)
+					const { top,right } = current.getBoundingClientRect()
+					// const distance = current.offsetTop - scrollParent.scrollTop
+					// btn.style.top = distance+'px'
+					// console.log(distance)
+					btn.style.top = top+'px'
+					console.log(right)
 				})
 			}
 			

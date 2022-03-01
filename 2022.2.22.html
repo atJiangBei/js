@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="btn-margin">
+			<button id="btn">更改数据</button>
+		</div>
+	</body>
+</html>
+<script>
+	// function curry(fn,...args){
+	// 	const length = fn.length;
+	// 	return function(...args2){
+	// 		const newArgs = args.concat(args2)
+	// 		if(newArgs.length >= length){
+	// 			return fn(...newArgs)
+	// 		}else{
+	// 			return curry(fn,...args)
+	// 		}
+	// 	}
+	// }
+	
+	// function add(a,b,c){
+	// 	return a+b+c
+	// }
+	// const fn = curry(add,1);
+	// console.log(fn(2,3,4))
+	
+	// function Parent(){
+	// 	this.hehe = 'parent'
+	// }
+	// function Child(){
+	// 	this.hehe = 'child'
+	// }
+	
+	// Child.prototype = new Parent()
+	// const child = new Child()
+	// function ins_tanceof(cu,pr){
+	// 	let _pro = cu.__proto__;
+	// 	let pro = pr.prototype;
+		
+	// 	while(true){
+	// 		console.log(37,_pro)
+	// 		if(_pro === null){
+	// 			return false;
+	// 		}
+	// 		if(_pro === pro){
+	// 			return true;
+	// 		}
+	// 		_pro = _pro.__proto__;
+	// 	}
+	// }
+	// console.log(child instanceof Child)
+	// console.log(ins_tanceof(child,Child))
+	// const vm = {
+	// 	_data:{
+	// 		a:"a",
+	// 		b:"b",
+	// 		c:"c"
+	// 	}
+	// }
+	// const shareProperty = {
+	// 	enumerable:true,
+	// 	configurable:true,
+	// 	get:null,
+	// 	set:null
+	// }
+	// const keys = Object.keys(vm._data);
+	// const proxy = (target,source,key)=>{
+	// 	shareProperty.get = function proxyGetter(){
+	// 		return this[source][key]
+	// 	}
+	// 	shareProperty.set = function proxySetter(val){
+	// 		return this[source][key] = val
+	// 	}
+	// 	Object.defineProperty(target,key,shareProperty)
+	// }
+	// let i = keys.length;
+	// while(i--){
+	// 	let key = keys[i]
+	// 	proxy(vm,'_data',key)
+	// }
+	
+	// console.log(vm.a)
+	// console.log(vm.b)
+	
+	// const proto = Array.prototype;
+	// const methods = ['push']
+	
+	// const _proto = Object.create(proto)
+	
+	// methods.forEach(method=>{
+	// 	_proto[method] = function(...args){
+	// 		console.log(`触发了${method}方法，参数是`,...args)
+	// 		return proto[method].apply(this,args)
+	// 	}
+	// })
+	// const arr = [1,2,3];
+	
+	// arr.__proto__ = _proto
+	
+	// arr.push(4)
+	
+	
+	// const a = {name:'a'};
+	// const b = Object.create(a)
+	// console.log(Object.keys(b),'name' in b)
+	
+	// var myObj = Object.create({name:'hehe'}, {
+	//   getFoo: {
+	// 	configurable:true,
+	// 	//enumerable:true,
+	//     value: function () { return 2; }
+	//   }
+	// });
+	// myObj.foo = 1;
+	// myObj[Symbol()] = 'symbol'
+	// console.log(Object.keys(myObj),myObj.foo,myObj,'name' in myObj); // console: ['foo']
+	
+	// console.log(Object.getOwnPropertyDescriptor(myObj,'getFoo'))
+	// console.log(Object.getOwnPropertyDescriptors(myObj))
+	// console.log(myObj.hasOwnProperty('name'))
+	// console.log(Object.getOwnPropertyNames(myObj))
+	// console.log(Object.getOwnPropertySymbols(myObj))
+	// console.log(Object.getPrototypeOf(myObj))
+	// console.log(Reflect.ownKeys(myObj))
+	
+	
+	
+	/*异步更新*/
+	// let flag = true;
+	// const render = ()=>{
+	// 	console.log('更新')
+	// }
+	// const nextTick = (render)=>{
+	// 	if(flag){
+	// 		flag = false;
+	// 		setTimeout(()=>{
+	// 			flag = true;
+	// 			render()
+	// 		})
+	// 	}
+	// }
+	// const run = ()=>{
+	// 	nextTick(render)
+	// }
+	
+	
+	
+	// const proto = Array.prototype;
+	// const methods = ['push']
+	
+	// const _proto = Object.create(proto)
+	
+	// methods.forEach(method=>{
+	// 	_proto[method] = function(...args){
+	// 		console.log(`触发了${method}方法，参数是`,...args)
+	// 		run()
+	// 		return proto[method].apply(this,args)
+	// 	}
+	// })
+	// const arr = [1,2,3];
+	
+	// arr.__proto__ = _proto
+	
+	// arr.push(4)
+	// arr.push(6)
+	// arr.push(7)
+	// setTimeout(()=>{
+	// 	arr.push(8)
+	// })
+	// document.querySelector("#btn").addEventListener("click",function(){
+	// 		console.log(1)
+	// 		Promise.resolve().then(()=>{
+	// 			console.log(2)
+	// 		})
+	// 	})
+	// 	document.querySelector("#btn-margin").addEventListener("click",function(){
+	// 		console.log(3)
+	// 		Promise.resolve().then(()=>{
+	// 			console.log(4)
+	// 		})
+	// 	})
+	
+	// class Parent{
+	// 	static a='parent'
+	// }
+	// class A extends Parent{
+		
+	// }
+	// console.log(Object.create(A))
+	function deepCopy(obj,map=new WeakMap()){
+		if(!obj || typeof obj !== 'object'){
+			return obj
+		}
+		if(map.has(obj)){
+			return map.get(obj)
+		}
+		const newObj = Array.isArray(obj)?[]:{};
+		map.set()
+	}
+	
+	
+</script>
