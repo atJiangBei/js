@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const isArray = (arr) => {
+		return Array.isArray(arr)
+	}
+	const isObj = (obj) => {
+		return Object.prototype.toString.call(obj) === "[object Object]";
+	}
+	var obj = {
+		a: {
+			b: {
+				c: {
+					d: 1,
+					h:2
+				}
+			}
+		},
+		hehe: {
+			a: [1, 2],
+			e: {
+				a: 2,
+				f:[1,2,3,{g:4}]
+			},
+		}
+	}
+	////{'a.b.c.d':1}
+	const zhuan = (obj) => {
+		var nbj = {};
+		const setVal = (str, it) => {
+			if (typeof(it) !== 'object') {
+				nbj[str] = it;
+			} else {
+				fn(str, it)
+			}
+		}
+		const forArray = (key,arr)=>{
+			arr.forEach((it, index) => {
+				var str = key ? key + ('[' + index+']') : '['+index+']';
+				setVal(str, it)
+			})
+		}
+		const forObj = (key,obj)=>{
+			for(let i in obj){
+				const str = key?key+'.'+i:i
+				setVal(str,obj[i])
+			}
+		}
+		const fn = (key = '', item) => {
+			if(isObj(item)){
+				forObj(key, item)
+			}
+			if (isArray(item)) {
+				forArray(key,item)
+			}
+		}
+		fn('', obj)
+		console.log(nbj)
+	}
+	zhuan(obj)
+	
+	const oldObj2 = {
+		a:{
+			b:1
+		},
+		c:[
+			1,2,{d:3,e:4}
+		]
+	}
+	zhuan(oldObj2)
+</script>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	class Components {
+		constructor() {
+
+		}
+		tab = (e) => {
+			console.log(e)
+		}
+		createElement(tag, props) {
+			const on = props.on;
+			const el = document.createElement(tag);
+			el.innerHTML = 'test'
+			el.store = {};
+			if (on && typeof on === 'object') {
+				for (let k in on) {
+					el.store[k] = on[k]
+					document.addEventListener(k, function(e) {
+						if (e.target === el) {
+							el.store[k].call(e.target, e)
+						}
+					})
+				}
+			}
+			let eventName = '';
+			return {
+				el,
+				on: {
+					...props.on
+				}
+			}
+		}
+		render() {
+			const {
+				el
+			} = this.createElement("div", {
+				on: {
+					click: this.tab
+				}
+			})
+			return el
+		}
+		mount() {
+			const el = this.render();
+			document.body.appendChild(el)
+		}
+	}
+	const react = new Components();
+	react.mount();
+</script>
+<script>
+	class React {
+		constructor() {
+			this.isSync = false;
+			this.queue = [];
+			this.state = {
+				count: 0
+			}
+		}
+		setState(data) {
+			if (!this.isSync) {
+				this.state = data;
+				this.render();
+			} else {
+				this.queue.push({
+					...this.state,
+					...data
+				})
+			}
+		}
+		bacUpdate() {
+			const data = this.queue[this.queue.length - 1];
+			this.state = data;
+			this.render();
+		}
+		render() {
+			this.isSync = false;
+		}
+	}
+	const rc = new React();
+	//异步
+	rc.isSync = true;
+	rc.setState({count:1});
+	rc.setState({count:2});
+	console.log(rc.state.count)
+	setTimeout(()=>{
+		rc.setState({count:3});
+		console.log(rc.state.count)
+	})
+	rc.bacUpdate()
+</script>

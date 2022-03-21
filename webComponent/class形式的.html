@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<popup-info onclick="popupAlert" title="我是一个测试webcomponent的标题" content="我算是内容吧"></popup-info>
+		<script>
+			function popupAlert(){
+				alert('通知消息')
+			}
+			class PopupInfo extends HTMLElement{
+				constructor(){
+					super()
+					const showdow = this.attachShadow({mode:'open'})
+					const warpper = document.createElement('div');
+					console.log(this.getProps())
+					const { title,content,onclick} = this.getProps()
+					const btn = document.createElement('button');
+					btn.innerHTML = '点击我'
+					btn.addEventListener('click',()=>{
+						window[onclick]()
+					})
+					warpper.innerHTML = `
+						<h1>${title}</h1>
+						<p>${content}</p>
+					`
+					warpper.appendChild(btn)
+					console.log(onclick)
+					showdow.appendChild(warpper)
+					console.log(warpper.getClientRects())
+					
+				}
+				getProps(){
+					const names = this.getAttributeNames();
+					const props = {};
+					names.forEach((name)=>{
+						props[name] = this.getAttribute(name)
+					})
+					return props
+				}
+			}
+			customElements.define('popup-info',PopupInfo)
+		</script>
+	</body>
+</html>
