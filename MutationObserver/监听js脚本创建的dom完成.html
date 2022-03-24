@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="root">
+			
+		</div>
+		<script>
+			const root = document.querySelector('#root');
+			const observer = new MutationObserver((mutationsList, observer)=>{
+				console.log('done')
+			})
+			observer.observe(root,{
+				attributes: true, 
+				childList: true, 
+				subtree: true
+			})
+			
+			const arr = new Array(30).fill(1);
+			let _html = '';
+			arr.forEach((_,index)=>{
+				_html+=`<div>${index}</div>`;
+				console.log(index)
+				root.innerHTML = _html
+			})
+			
+		</script>
+	</body>
+</html>

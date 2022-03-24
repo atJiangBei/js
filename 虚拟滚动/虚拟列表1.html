@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+			}
+			#scroll-container{
+				border: 1px solid #11263C;
+				height: 420px;
+				position: relative;
+				background-color: #C0C5CE;
+			}
+			#scrollBar{
+				height: 50px;
+				width: 8px;
+				border-radius: 8px;
+				background-color: rgba(255,255,255,0.6);
+				position: absolute;
+				right: 2px;
+				top: 0;
+			}
+			#list li{
+				line-height: 42px;
+				list-style: none;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="scroll-container">
+			<ul id="list">
+				
+			</ul>
+			<span id="scrollBar"></span>
+		</div>
+		<script>
+			const dataList = [];
+			for(let i=0;i<1000;i++){
+				dataList.push(i);
+			}
+			let pageSize = 10;
+			let startIndex = 0;
+			let endIndex = startIndex + pageSize;
+			function renderList (container,startIndex,endIndex){
+				const list = dataList.slice(startIndex,endIndex)
+				let _html = '';
+				list.forEach(item=>{
+					_html += `<li>${item}</li>`
+				})
+				container.innerHTML = _html
+			}
+			
+			const scrollContainer = document.querySelector('#scroll-container');
+			const list = document.querySelector('#list');
+			const scrollBar = document.querySelector('#scrollBar');
+			renderList(list,startIndex,endIndex)
+			function pageUp(){
+				if(startIndex<=0) return ;
+				startIndex--;
+				endIndex = startIndex + pageSize;
+				renderList(list,startIndex,endIndex)
+			}
+			function pageDown(){
+				if(startIndex >= 1000 - pageSize) return ;
+					startIndex++;
+					endIndex = startIndex + pageSize;
+					renderList(list,startIndex,endIndex)
+				
+			}
+			function setScrollBarPosition(){
+				const barHeight = scrollBar.clientHeight;
+				const containerHeight = scrollContainer.clientHeight;
+				const maxScrollTop = containerHeight - barHeight;
+				
+				const scrollTop = startIndex/1000 * maxScrollTop;
+				scrollBar.style.top = scrollTop+'px'
+			}
+			setScrollBarPosition()
+			scrollContainer.addEventListener('mousewheel',function(e){
+				const wheelDeltaY = e.wheelDeltaY;
+				if(wheelDeltaY>0){
+					pageUp()
+				}else if(wheelDeltaY<0){
+					pageDown()
+				}
+				setScrollBarPosition()
+			})
+		</script>
+	</body>
+</html>
