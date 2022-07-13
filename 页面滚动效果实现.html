@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			body{
+				overflow-x: hidden;
+			}
+			#banner-container{
+				height: 1000px;
+				
+			}
+			#img{
+				height: 1000px;
+				width: 100%;
+				display: block;
+				position: fixed;
+				left: 0;
+				top: 0;
+				z-index: 3;
+			}
+			#content{
+				
+			}
+			#list{
+				position: fixed;
+				left: 0;
+				top: 0;
+				width: 100%;
+				z-index: 2;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<div class="banner-container" id="banner-container">
+				<img src="https://www.nio.cn/cdn-static/mynio/nextjs/images/4124399E5BB45E85CBAFDE6307297F4A045845F4/home/es7-homepage-hero-desktop.jpg" id="img"/>
+			</div>
+			<section id="content">
+				<ul id="list"></ul>
+			</section>
+			<script>
+				const content = document.querySelector("#content");
+				const list = document.querySelector("#list");
+				const renderContent = ()=>{
+					
+					let str = ''
+					for(let i=0;i<500;i++){
+						str+= '<li>'+i+"</li>"
+					}
+					list.innerHTML = str
+				}
+				renderContent()
+				const setContentHeight = ()=>{
+					content.style.height = list.offsetHeight + 'px'
+				}
+				setContentHeight()
+				const imgBanner = document.querySelector("#img");
+				const bannerHeight = imgBanner.offsetHeight;
+				window.addEventListener('scroll',function(){
+					
+					if(window.scrollY<bannerHeight){
+						imgBanner.style.top = -window.scrollY+'px'
+						console.log(window.scrollY)
+					}else{
+						list.style.top = -(window.scrollY - bannerHeight)+'px'
+					}
+				})
+			</script>
+		</div>
+	</body>
+</html>

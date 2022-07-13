@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .rest {
+      height: 500px;
+      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, .5);
+    }
+
+    .cotent {
+      height: auto;
+      width: 100vw;
+    }
+
+    .inner {
+      min-height: 100vh;
+      height: 100vh;
+      position: relative;
+    }
+
+    .inner-content {
+      position: fixed;
+      /* position: relative; */
+      top: 0;
+    }
+
+    .main {
+      height: 100vh;
+      width: 100vw;
+      position: absolute;
+      z-index: 2;
+      top: 0px;
+      background: green;
+      opacity: 0.3;
+    }
+
+    .bottom {
+      color: #fff;
+      height: 100vh;
+      width: 100vw;
+      background: red;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="cotent">
+      <div id="inner" class="inner">
+        <div id="inner-content" class="inner-content">
+          <div id="main" class="main"></div>
+          <div class="bottom"></div>
+        </div>
+      </div>
+    </div>
+    <div class="rest"></div>
+    <div class="rest"></div>
+    <div class="rest"></div>
+    <div class="rest"></div>
+    <div class="rest"></div>
+    <div class="rest"></div>
+  </div>
+</body>
+<script>
+  const main = document.querySelector("#main");
+  const innerContent = document.querySelector("#inner-content");
+  const inner = document.querySelector("#inner");
+  window.addEventListener('scroll', () => {
+
+    if (window.scrollY < 789) {
+      main.style.transform = `translate3d(0px,${-window.scrollY}px, 0px)`;
+      innerContent.style.position = 'fixed';
+      inner.style.height = '100vh';
+      inner.style.paddingTop = 0;
+    } else {
+      innerContent.style.position = 'relative';
+      inner.style.height = 'auto';
+      inner.style.paddingTop = '100vh';
+      // main.style.transform = 'matrix(1, 0, 0, 1, 0, -631.2)';
+    }
+  })
+</script>
+
+</html>
