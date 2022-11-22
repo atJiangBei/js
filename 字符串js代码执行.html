@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<div id="app">
+			
+		</div>
+		<script>
+			const str = "<div id='asdasd'><span></span></div><script>if(document.getElementById('asdasd')){document.getElementById('asdasd').innerHTML = '内容'}<\/script>";
+			
+			
+			const renderNodeString = (root,nodeString)=>{
+				root = typeof root === 'object' ? root:document.querySelector(root)
+				const container = document.createElement("div");
+				container.innerHTML = nodeString;
+				const list = [...container.children];
+				list.forEach(dom=>{
+					let cloneDom = null;
+					if(dom.tagName === 'SCRIPT'){
+						cloneDom = document.createElement(dom.tagName);
+						cloneDom.innerHTML = dom.innerHTML
+					}else{
+						 cloneDom = dom.cloneNode(true)
+					}
+					root.appendChild(cloneDom)
+				})
+			}
+			renderNodeString(document.querySelector('#app'),str)
+		</script>
+	</body>
+</html>

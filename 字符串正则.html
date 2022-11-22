@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<input id="text" placeholder="正则"/>
+		<input id="val" placeholder="value"/>
+		<div>
+			<button id="btn">Get Test</button>
+		</div>
+		
+		<script>
+			const text = document.getElementById("text");
+			const val = document.getElementById("val");
+			const btn = document.getElementById("btn");
+			
+			
+			btn.onclick = function(){
+				console.log(new RegExp(text.value).test(val.value))
+			}
+		</script>
+	</body>
+</html>

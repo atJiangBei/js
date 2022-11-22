@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+	</body>
+</html>
+<script>
+	const dataValue = {
+		a1:5,
+		b2:6,
+		c3:8,
+		d4:2,
+		e5:5
+	}
+	const formula = "a1*b2+(c3/d4)-e5";
+	
+	
+	const operationalSymbol = ['*','/',"+","-","(",")"];
+	const newArr = [];
+	let start = 0;
+	for(let i=0;i<formula.length;i++){
+		const cStr = formula[i];
+		if(operationalSymbol.includes(cStr)){
+			if(start === i){
+				newArr.push(formula.substring(i,i+1))
+			}else{
+				newArr.push(formula.substring(start,i),formula.substring(i,i+1))
+			}
+			start = i+1;
+			
+		}
+	}
+	if(start<formula.length){
+		newArr.push(formula.substring(start,formula.length))
+	}
+	
+	const scriptStr = newArr.reduce(function(start,key){
+		if(operationalSymbol.includes(key)){
+			return start+=key
+		}else{
+			return start+=dataValue[key]
+		}
+	},'')
+	console.log(scriptStr)
+	console.log(eval(scriptStr))
+</script>
